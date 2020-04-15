@@ -1,0 +1,48 @@
+package com.example.jumppathdemo
+
+import android.app.Activity
+import android.app.Application
+import android.os.Bundle
+import android.util.Log
+import com.example.jumppathdemo.pathstat.PathStatSDK
+
+/**
+ * Created by zhanglulu on 2020/4/15.
+ * for
+ */
+private const val TAG = "MyApp"
+class MyApp : Application(), Application.ActivityLifecycleCallbacks {
+    override fun onCreate() {
+        super.onCreate()
+        registerActivityLifecycleCallbacks(this)
+        PathStatSDK.get().init(this)
+        Log.d(TAG, "APP_SESSION_ID: ${PathStatSDK.get().sessionId}")
+    }
+
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        Log.d(TAG, "onActivityCreated: ${activity.javaClass.name}")
+    }
+
+    override fun onActivityStarted(activity: Activity) {
+        Log.d(TAG, "onActivityStarted: ${activity.javaClass.name}")
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+        Log.d(TAG, "onActivityResumed: ${activity.javaClass.name}")
+    }
+
+    override fun onActivityPaused(activity: Activity) {
+        Log.d(TAG, "onActivityPaused: ${activity.javaClass.name}")
+    }
+    override fun onActivityStopped(activity: Activity) {
+        Log.d(TAG, "onActivityStopped: ${activity.javaClass.name}")
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+        Log.d(TAG, "onActivityDestroyed: ${activity.javaClass.name}")
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        Log.d(TAG, "onActivitySaveInstanceState: ${activity.javaClass.name}")
+    }
+}
