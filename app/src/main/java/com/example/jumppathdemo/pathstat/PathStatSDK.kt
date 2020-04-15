@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.example.jumppathdemo.ViewPagerFragment
 import com.qq.reader.widget.PathStatViewPager
-import com.qq.reader.widget.WebAdViewPager
 import java.util.*
 
 
@@ -126,6 +124,7 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     }
     public fun onFragmentDestroy(fragment: Fragment?) {
         fragmentNum--
+        Log.d(TAG, "onFragmentDestroy fragmentNum: $fragmentNum")
         if (fragmentNum == 0) {
             curFragment = null//防止泄露
         }

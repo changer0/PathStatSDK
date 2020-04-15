@@ -12,6 +12,17 @@ import com.example.jumppathdemo.pathstat.PathStatSDK
  */
 private const val TAG = "MyApp"
 class MyApp : Application(), Application.ActivityLifecycleCallbacks {
+
+    init {
+        instance = this
+    }
+
+    companion object {
+        private lateinit var instance: Application
+        public fun get() :Application {
+            return instance
+        }
+    }
     override fun onCreate() {
         super.onCreate()
         registerActivityLifecycleCallbacks(this)
