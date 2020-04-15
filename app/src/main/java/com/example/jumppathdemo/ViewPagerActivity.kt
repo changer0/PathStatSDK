@@ -1,0 +1,39 @@
+package com.example.jumppathdemo
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import com.example.jumppathdemo.pathstat.IGetPathStatInfo
+import com.example.jumppathdemo.pathstat.PathStatInfo
+import com.qq.reader.view.PathStatFragmentPageAdapter
+import kotlinx.android.synthetic.main.activity_view_pager.*
+
+class ViewPagerActivity : FragmentActivity(), IGetPathStatInfo {
+    override fun getPathStatInfo(): PathStatInfo {
+        return PathStatInfo(false)
+    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_view_pager)
+        viewpager.adapter = MyAdapter(supportFragmentManager)
+        viewpager.offscreenPageLimit = 1;
+        viewpager.currentItem = 0
+    }
+
+    class MyAdapter(fm: FragmentManager) : PathStatFragmentPageAdapter(fm) {
+        override fun getItem(position: Int): BaseFragment {
+            val viewPagerFragment = ViewPagerFragment()
+            val bundle = Bundle()
+            bundle.putInt("tab", position)
+            viewPagerFragment.arguments = bundle
+            return viewPagerFragment
+        }
+
+        override fun getCount(): Int {
+            return 3
+        }
+
+    }
+}

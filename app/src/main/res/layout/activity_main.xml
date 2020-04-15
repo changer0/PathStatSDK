@@ -19,4 +19,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:id="@+id/viewpager"
+        app:layout_constraintTop_toBottomOf="@id/stat"
+        android:text="ViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/singleFragment"
+        app:layout_constraintTop_toBottomOf="@id/viewpager"
+        android:text="单个Fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,11 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import androidx.fragment.app.Fragment
+import com.example.jumppathdemo.ViewPagerFragment
+import com.qq.reader.widget.PathStatViewPager
+import com.qq.reader.widget.WebAdViewPager
 import java.util.*
 
 
@@ -38,9 +43,18 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     private var curActivity: Activity? = null
 
     /**
-     * 当前 Activity 数量
+     * Activity 数量
      */
     private var activityNum: Int = 0
+
+    /**
+     * 当前 Fragment
+     */
+    private var curFragment: Fragment? = null
+    /**
+     * Fragment 数量
+     */
+    private var fragmentNum: Int = 0;
 
     /**
      * 初始化方法
@@ -91,6 +105,59 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     // 生命周期回调 end
     //----------------------------------------------------------------------------------------------
 
+    //----------------------------------------------------------------------------------------------
+    // Fragment 生命周期回调
+    public fun onFragmentCreate(fragment: Fragment?) {
+        fragmentNum++
+    }
+    public fun onFragmentStart(fragment: Fragment?) {
+        if (fragment === null) {
+            return
+        }
+        if (curFragment === fragment) {
+            return
+        }
+        if (isViewPageFragment(fragment.view)) {
+            //嵌套在 ViewPage 中的 Fragment 此处不做上报
+            return
+        }
+        statPathInfo(analyseFragmentStatPathInfo(fragment))
+        curFragment = fragment
+    }
+    public fun onFragmentDestroy(fragment: Fragment?) {
+        fragmentNum--
+        if (fragmentNum == 0) {
+            curFragment = null//防止泄露
+        }
+    }
+    // Fragment 生命周期回调 end
+    //----------------------------------------------------------------------------------------------
+    private fun isViewPageFragment(view: View?):Boolean {
+        if (view == null) {
+            return false
+        }
+        if (view is PathStatViewPager) {
+            return true
+        }
+        if (view.parent !is View) {
+            return false
+        }
+        return isViewPageFragment(view.parent as View)
+
+    }
+
+    /**
+     * 解析 Fragment 中的 PathStatInfo
+     */
+    internal fun analyseFragmentStatPathInfo(fragment: Fragment):PathStatInfo {
+        return if (fragment is IGetPathStatInfo) {
+            (fragment as IGetPathStatInfo).getPathStatInfo()
+        } else {
+            //统计信息未设置，使用默认的 Fragment 类名
+            PathStatInfo(fragment.javaClass.name)
+        }
+    }
+
     /**
      * 解析 Activity 中的 PathStatInfo
      */
@@ -108,6 +175,10 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      * 外部可手动调用，强制上报，针对一些非 Activity 切换场景
      */
     public fun statPathInfo(pathStatInfo: PathStatInfo) {
+        if (pathStatInfo.needStat.not()) {
+            //无需上报
+            return
+        }
         val ascendOrder = ascendOrder()
         Log.d(TAG, "上报序号：${ascendOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${sessionId}")
     }

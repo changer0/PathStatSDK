@@ -18,5 +18,11 @@ class MainActivity : AppCompatActivity() {
         stat.setOnClickListener {
             PathStatSDK.get().statPathInfo(PathStatInfo("手动上报"))
         }
+        viewpager.setOnClickListener {
+            startActivity(Intent(this, ViewPagerActivity::class.java))
+        }
+        singleFragment.setOnClickListener {
+            startActivity(Intent(this, SingleFragmentActivity::class.java))
+        }
     }
 }
