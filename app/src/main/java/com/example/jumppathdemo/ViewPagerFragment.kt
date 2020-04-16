@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.jumppathdemo.pathstat.PathInfo
+import com.example.jumppathdemo.pathstat.PathStatInfo
 import kotlinx.android.synthetic.main.fragment_item.*
 
 /**
@@ -26,8 +26,8 @@ class ViewPagerFragment: BaseFragment() {
         fragment_text.text = arguments?.getInt("tab").toString()
     }
 
-    override fun getPathInfo(): PathInfo {
-        return PathInfo("当前子 Fragment: "+arguments?.getInt("tab").toString())
+    override fun getPathStatInfo(): PathStatInfo {
+        return PathStatInfo("当前子 Fragment: "+arguments?.getInt("tab").toString())
     }
 
 }

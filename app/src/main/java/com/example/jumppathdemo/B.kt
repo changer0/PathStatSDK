@@ -3,11 +3,11 @@ package com.example.jumppathdemo
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.jumppathdemo.pathstat.IGetPathInfo
-import com.example.jumppathdemo.pathstat.PathInfo
+import com.example.jumppathdemo.pathstat.IGetPathStatInfo
+import com.example.jumppathdemo.pathstat.PathStatInfo
 import kotlinx.android.synthetic.main.activity_b.*
 
-class B : AppCompatActivity(), IGetPathInfo {
+class B : AppCompatActivity(), IGetPathStatInfo {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +17,7 @@ class B : AppCompatActivity(), IGetPathInfo {
         }
     }
 
-    override fun getPathInfo(): PathInfo {
-        return PathInfo("B")
+    override fun getPathStatInfo(): PathStatInfo {
+        return PathStatInfo("B")
     }
 }
