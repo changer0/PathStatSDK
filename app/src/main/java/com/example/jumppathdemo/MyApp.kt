@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.example.jumppathdemo.pathstat.PathStatSDK
 
 /**
@@ -26,7 +27,10 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     override fun onCreate() {
         super.onCreate()
         registerActivityLifecycleCallbacks(this)
-        PathStatSDK.get().init(this)
+        PathStatSDK.get().init(this) { pathStatInfo->
+            Toast.makeText(this,
+                "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${pathStatInfo.sessionId}", Toast.LENGTH_SHORT).show()
+        }
         Log.d(TAG, "APP_SESSION_ID: ${PathStatSDK.get().sessionId}")
     }
 

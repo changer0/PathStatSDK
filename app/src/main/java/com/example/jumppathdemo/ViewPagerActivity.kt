@@ -6,8 +6,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.jumppathdemo.pathstat.IGetPathStatInfo
+import com.example.jumppathdemo.pathstat.IPathStatViewPagerFragmentAdapter
 import com.example.jumppathdemo.pathstat.PathStatInfo
-import com.qq.reader.view.PathStatFragmentPageAdapter
+import com.qq.reader.view.SlipedFragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_view_pager.*
 
 class ViewPagerActivity : FragmentActivity(), IGetPathStatInfo {
@@ -22,7 +23,8 @@ class ViewPagerActivity : FragmentActivity(), IGetPathStatInfo {
         viewpager.currentItem = 0
     }
 
-    class MyAdapter(fm: FragmentManager) : PathStatFragmentPageAdapter(fm) {
+    class MyAdapter(fm: FragmentManager) : SlipedFragmentStatePagerAdapter(fm),
+        IPathStatViewPagerFragmentAdapter {
         override fun getItem(position: Int): BaseFragment {
             val viewPagerFragment = ViewPagerFragment()
             val bundle = Bundle()

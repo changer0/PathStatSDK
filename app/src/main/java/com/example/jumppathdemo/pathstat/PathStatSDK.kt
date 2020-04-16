@@ -52,12 +52,17 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     /**
      * Fragment 数量
      */
-    private var fragmentNum: Int = 0;
+    private var fragmentNum: Int = 0
 
+    /**
+     * 上报回调
+     */
+    private lateinit var statListener: (statInfo: PathStatInfo) -> Unit
     /**
      * 初始化方法
      */
-    public fun init(application: Application) {
+    public fun init(application: Application, statListener: (statInfo: PathStatInfo) -> Unit) {
+        this.statListener = statListener
         application.registerActivityLifecycleCallbacks(this)
     }
 
@@ -168,7 +173,13 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             PathStatInfo(activity.javaClass.name)
         }
     }
-
+    /**
+     * 释放
+     */
+    private fun release() {
+        curOrder = 0
+        curActivity = null
+    }
     /**
      * 上报 PathInfo
      * 外部可手动调用，强制上报，针对一些非 Activity 切换场景
@@ -179,14 +190,9 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             return
         }
         val ascendOrder = ascendOrder()
-        Log.d(TAG, "上报序号：${ascendOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${sessionId}")
-    }
-
-    /**
-     * 释放
-     */
-    private fun release() {
-        curOrder = 0
-        curActivity = null
+        pathStatInfo.curOrder = ascendOrder
+        pathStatInfo.sessionId = sessionId
+        Log.d(TAG, "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${pathStatInfo.sessionId}")
+        statListener(pathStatInfo)
     }
 }

@@ -3,10 +3,9 @@ package com.qq.reader.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
-import android.view.View
 import androidx.viewpager.widget.PagerAdapter
+import com.example.jumppathdemo.pathstat.IPathStatViewPagerFragmentAdapter
 import com.example.jumppathdemo.pathstat.PathStatSDK
-import com.qq.reader.view.PathStatFragmentPageAdapter
 
 /**
  * Created by zhanglulu on 2020/4/15.
@@ -45,10 +44,10 @@ class PathStatViewPager: WebAdViewPager {
     }
 
     private fun statPathInfo(pos: Int) {
-        if (adapter !is PathStatFragmentPageAdapter) {
+        if (adapter !is IPathStatViewPagerFragmentAdapter) {
             return
         }
-        val pathStatAdapter = adapter as PathStatFragmentPageAdapter
+        val pathStatAdapter = adapter as IPathStatViewPagerFragmentAdapter
         val curFragment = pathStatAdapter.getItem(pos)
         val pathStatInfo = PathStatSDK.get().analyseFragmentStatPathInfo(curFragment)
         PathStatSDK.get().statPathInfo(pathStatInfo)
