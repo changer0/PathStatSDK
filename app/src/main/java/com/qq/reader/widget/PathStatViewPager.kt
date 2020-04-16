@@ -49,7 +49,7 @@ class PathStatViewPager: WebAdViewPager {
         }
         val pathStatAdapter = adapter as IPathStatViewPagerFragmentAdapter
         val curFragment = pathStatAdapter.getItem(pos)
-        val pathStatInfo = PathStatSDK.get().analyseFragmentStatPathInfo(curFragment)
+        val pathStatInfo = PathStatSDK.get().analyseStatPathInfo(curFragment)
         PathStatSDK.get().statPathInfo(pathStatInfo)
 
     }

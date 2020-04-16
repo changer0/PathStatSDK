@@ -83,7 +83,7 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             //如果两次 Started 对象相同则不统计
             return
         }
-        statPathInfo(analyseActivityStatPathInfo(activity))
+        statPathInfo(analyseStatPathInfo(activity))
         curActivity = activity
     }
     override fun onActivityResumed(activity: Activity) {
@@ -124,7 +124,7 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             //嵌套在 ViewPage 中的 Fragment 此处不做上报
             return
         }
-        statPathInfo(analyseFragmentStatPathInfo(fragment))
+        statPathInfo(analyseStatPathInfo(fragment))
         curFragment = fragment
     }
     public fun onFragmentDestroy(fragment: Fragment?) {
@@ -151,28 +151,17 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     }
 
     /**
-     * 解析 Fragment 中的 PathStatInfo
+     * 解析 PathStatInfo
      */
-    internal fun analyseFragmentStatPathInfo(fragment: Fragment):PathStatInfo {
-        return if (fragment is IGetPathStatInfo) {
-            (fragment as IGetPathStatInfo).getPathStatInfo()
+    internal fun analyseStatPathInfo(target: Any):PathStatInfo {
+        return if (target is IGetPathStatInfo) {
+            target.getPathStatInfo()
         } else {
             //统计信息未设置，使用默认的 Fragment 类名
-            PathStatInfo(fragment.javaClass.name)
+            PathStatInfo(target.javaClass.name)
         }
     }
 
-    /**
-     * 解析 Activity 中的 PathStatInfo
-     */
-    private fun analyseActivityStatPathInfo(activity: Activity):PathStatInfo {
-        return if (activity is IGetPathStatInfo) {
-            (activity as IGetPathStatInfo).getPathStatInfo()
-        } else {
-            //统计信息未设置，使用默认的 Activity 类名
-            PathStatInfo(activity.javaClass.name)
-        }
-    }
     /**
      * 释放
      */
