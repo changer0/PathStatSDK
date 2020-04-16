@@ -23,11 +23,11 @@ class ViewPagerFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fragment_text.text = arguments?.getInt("tab").toString()
+        fragment_text.text = arguments?.getString("text")
     }
 
     override fun getPathStatInfo(): PathStatInfo {
-        return PathStatInfo("当前子 Fragment: "+arguments?.getInt("tab").toString())
+        return PathStatInfo("当前子 Fragment: "+arguments?.getString("text").toString())
     }
 
 }

@@ -26,7 +26,7 @@ class ViewPagerActivity : FragmentActivity(), IGetPathStatInfo {
         override fun getItem(position: Int): BaseFragment {
             val viewPagerFragment = ViewPagerFragment()
             val bundle = Bundle()
-            bundle.putInt("tab", position)
+            bundle.putString("text", position.toString())
             viewPagerFragment.arguments = bundle
             return viewPagerFragment
         }

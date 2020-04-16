@@ -10,6 +10,9 @@ class SingleFragmentActivity : FragmentActivity(),IGetPathStatInfo {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_fragment)
         val fragment = ViewPagerFragment()
+        val bundle = Bundle()
+        bundle.putString("text", "单个 Fragment")
+        fragment.arguments = bundle
         val bt = supportFragmentManager.beginTransaction()
         bt.add(R.id.rootView, fragment)
         bt.commitNow()

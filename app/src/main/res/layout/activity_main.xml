@@ -15,15 +15,15 @@
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/viewpager"
-        android:text="Fragment ViewPager"
+        android:id="@+id/singleFragment"
+        android:text="单个 Fragment"
         android:textAllCaps="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/singleFragment"
-        android:text="单个 Fragment"
+        android:id="@+id/viewpager"
+        android:text="Fragment ViewPager"
         android:textAllCaps="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
