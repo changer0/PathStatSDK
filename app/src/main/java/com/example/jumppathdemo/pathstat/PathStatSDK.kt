@@ -57,11 +57,11 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     /**
      * 上报回调
      */
-    private lateinit var statListener: (statInfo: PathStatInfo) -> Unit
+    private lateinit var statListener: (info: PathInfo) -> Unit
     /**
      * 初始化方法
      */
-    public fun init(application: Application, statListener: (statInfo: PathStatInfo) -> Unit) {
+    public fun init(application: Application, statListener: (info: PathInfo) -> Unit) {
         this.statListener = statListener
         application.registerActivityLifecycleCallbacks(this)
     }
@@ -153,24 +153,24 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     /**
      * 解析 Fragment 中的 PathStatInfo
      */
-    internal fun analyseFragmentStatPathInfo(fragment: Fragment):PathStatInfo {
-        return if (fragment is IGetPathStatInfo) {
-            (fragment as IGetPathStatInfo).getPathStatInfo()
+    internal fun analyseFragmentStatPathInfo(fragment: Fragment):PathInfo {
+        return if (fragment is IGetPathInfo) {
+            (fragment as IGetPathInfo).getPathInfo()
         } else {
             //统计信息未设置，使用默认的 Fragment 类名
-            PathStatInfo(fragment.javaClass.name)
+            PathInfo(fragment.javaClass.name)
         }
     }
 
     /**
      * 解析 Activity 中的 PathStatInfo
      */
-    private fun analyseActivityStatPathInfo(activity: Activity):PathStatInfo {
-        return if (activity is IGetPathStatInfo) {
-            (activity as IGetPathStatInfo).getPathStatInfo()
+    private fun analyseActivityStatPathInfo(activity: Activity):PathInfo {
+        return if (activity is IGetPathInfo) {
+            (activity as IGetPathInfo).getPathInfo()
         } else {
             //统计信息未设置，使用默认的 Activity 类名
-            PathStatInfo(activity.javaClass.name)
+            PathInfo(activity.javaClass.name)
         }
     }
     /**
@@ -184,15 +184,15 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      * 上报 PathInfo
      * 外部可手动调用，强制上报，针对一些非 Activity 切换场景
      */
-    public fun statPathInfo(pathStatInfo: PathStatInfo) {
-        if (pathStatInfo.needStat.not()) {
+    public fun statPathInfo(pathInfo: PathInfo) {
+        if (pathInfo.needStat.not()) {
             //无需上报
             return
         }
         val ascendOrder = ascendOrder()
-        pathStatInfo.curOrder = ascendOrder
-        pathStatInfo.sessionId = sessionId
-        Log.d(TAG, "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${pathStatInfo.sessionId}")
-        statListener(pathStatInfo)
+        pathInfo.curOrder = ascendOrder
+        pathInfo.sessionId = sessionId
+        Log.d(TAG, "上报序号：${pathInfo.curOrder}, 上报 pn：${pathInfo.pn}，SessionId：${pathInfo.sessionId}")
+        statListener(pathInfo)
     }
 }

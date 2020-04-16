@@ -1,10 +1,10 @@
 package com.example.jumppathdemo
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-import com.example.jumppathdemo.pathstat.IGetPathStatInfo
-import com.example.jumppathdemo.pathstat.PathStatInfo
+import com.example.jumppathdemo.pathstat.IGetPathInfo
+import com.example.jumppathdemo.pathstat.PathInfo
 
-class SingleFragmentActivity : FragmentActivity(),IGetPathStatInfo {
+class SingleFragmentActivity : FragmentActivity(),IGetPathInfo {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,7 +15,7 @@ class SingleFragmentActivity : FragmentActivity(),IGetPathStatInfo {
         bt.commitNow()
     }
 
-    override fun getPathStatInfo(): PathStatInfo {
-        return PathStatInfo(false)
+    override fun getPathInfo(): PathInfo {
+        return PathInfo(false)
     }
 }

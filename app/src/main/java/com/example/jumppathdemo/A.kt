@@ -4,12 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.example.jumppathdemo.pathstat.IGetPathStatInfo
-import com.example.jumppathdemo.pathstat.PathStatInfo
+import com.example.jumppathdemo.pathstat.IGetPathInfo
+import com.example.jumppathdemo.pathstat.PathInfo
 import com.example.jumppathdemo.pathstat.PathStatSDK
 import kotlinx.android.synthetic.main.activity_a.*
 
-class A : AppCompatActivity(), IGetPathStatInfo{
+class A : AppCompatActivity(), IGetPathInfo{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +20,7 @@ class A : AppCompatActivity(), IGetPathStatInfo{
         }
     }
 
-    override fun getPathStatInfo(): PathStatInfo {
-        return PathStatInfo("A")
+    override fun getPathInfo(): PathInfo {
+        return PathInfo("A")
     }
 }

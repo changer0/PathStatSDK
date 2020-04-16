@@ -3,8 +3,8 @@ package com.example.jumppathdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import com.example.jumppathdemo.pathstat.IGetPathStatInfo
-import com.example.jumppathdemo.pathstat.PathStatInfo
+import com.example.jumppathdemo.pathstat.IGetPathInfo
+import com.example.jumppathdemo.pathstat.PathInfo
 import com.example.jumppathdemo.pathstat.PathStatSDK
 
 /**
@@ -12,7 +12,7 @@ import com.example.jumppathdemo.pathstat.PathStatSDK
  * for
  */
 private const val TAG = "BaseFragment"
-open class BaseFragment: Fragment(), IGetPathStatInfo {
+open class BaseFragment: Fragment(), IGetPathInfo {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PathStatSDK.get().onFragmentCreate(this)
@@ -29,7 +29,7 @@ open class BaseFragment: Fragment(), IGetPathStatInfo {
         PathStatSDK.get().onFragmentDestroy(this)
     }
 
-    override fun getPathStatInfo(): PathStatInfo {
-        return PathStatInfo(javaClass.name)
+    override fun getPathInfo(): PathInfo {
+        return PathInfo(javaClass.name)
     }
 }

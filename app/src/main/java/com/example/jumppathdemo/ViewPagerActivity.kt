@@ -1,19 +1,17 @@
 package com.example.jumppathdemo
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import com.example.jumppathdemo.pathstat.IGetPathStatInfo
+import com.example.jumppathdemo.pathstat.IGetPathInfo
 import com.example.jumppathdemo.pathstat.IPathStatViewPagerFragmentAdapter
-import com.example.jumppathdemo.pathstat.PathStatInfo
+import com.example.jumppathdemo.pathstat.PathInfo
 import com.qq.reader.view.SlipedFragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_view_pager.*
 
-class ViewPagerActivity : FragmentActivity(), IGetPathStatInfo {
-    override fun getPathStatInfo(): PathStatInfo {
-        return PathStatInfo(false)
+class ViewPagerActivity : FragmentActivity(), IGetPathInfo {
+    override fun getPathInfo(): PathInfo {
+        return PathInfo(false)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
