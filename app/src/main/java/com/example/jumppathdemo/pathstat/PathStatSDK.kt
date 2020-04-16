@@ -29,7 +29,7 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     /**
      * 路径统计会话 ID
      */
-    public val sessionId = UUID.randomUUID().toString()
+    public var sessionId = UUID.randomUUID().toString()
     /**
      * 当前序号
      */
@@ -179,6 +179,8 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     private fun release() {
         curOrder = 0
         curActivity = null
+        //返回键退出时，sessionId 需要重新生成
+        sessionId = UUID.randomUUID().toString()
     }
     /**
      * 上报 PathInfo
