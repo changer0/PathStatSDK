@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.qq.reader.view.SlipedFragmentStatePagerAdapter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -117,7 +116,7 @@ public class HockHelper {
             Log.e(TAG, "statPathInfo: 既然使用了原生的 ViewPager 就请使用系统的 FragmentAdapter" );
             return;
         }
-        PathStatInfo pathStatInfo = PathStatSDK.get().analyseStatPathInfo$app_debug(item);
+        PathStatInfo pathStatInfo = PathStatSDK.get().analyseStatPathInfo$pathstatsdk_debug(item);
         PathStatSDK.get().statPathInfo(pathStatInfo);
     }
 }

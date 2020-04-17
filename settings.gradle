@@ -1,3 +1,4 @@
 rootProject.name='PathStatSDKDemo'
 include ':app'
 include ':pathstatplugin'
+include ':pathstatsdk'

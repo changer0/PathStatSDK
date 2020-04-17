@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.yuewen.cooperate.pathstat.IGetPathStatInfo
-import com.yuewen.cooperate.pathstat.IPathStatViewPagerFragmentAdapter
 import com.yuewen.cooperate.pathstat.PathStatInfo
 import com.qq.reader.view.SlipedFragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_view_pager.*
@@ -23,8 +22,7 @@ class ViewPagerActivity : FragmentActivity(), IGetPathStatInfo {
         viewpager.currentItem = 0
     }
 
-    class MyAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm),
-        IPathStatViewPagerFragmentAdapter {
+    class MyAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm){
         override fun getItem(position: Int): BaseFragment {
             val viewPagerFragment = ViewPagerFragment()
             val bundle = Bundle()
