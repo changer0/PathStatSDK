@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ViewPagerActivity">
 
-    <com.qq.reader.widget.PathStatViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.qq.reader.widget.PathStatViewPager
+import androidx.viewpager.widget.ViewPager
 import java.util.*
 
 
@@ -19,6 +19,7 @@ private const val TAG = "PathStatSDK"
 
 class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks {
     companion object {
+        @JvmStatic
         fun get() : PathStatSDK {
             return Holder.instance
         }
@@ -140,7 +141,7 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
         if (view == null) {
             return false
         }
-        if (view is PathStatViewPager) {
+        if (view is ViewPager) {
             return true
         }
         if (view.parent !is View) {

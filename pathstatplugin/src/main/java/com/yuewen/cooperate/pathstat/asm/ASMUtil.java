@@ -85,7 +85,7 @@ public class ASMUtil {
                     methodVisitor.visitVarInsn(ALOAD, 0);
                     // INVOKESTATIC INVOKESTATIC
                     methodVisitor.visitMethodInsn(INVOKESTATIC,
-                            "com/yuewen/cooperate/pathstat/TrackHelper",
+                            "com/yuewen/cooperate/pathstat/HockHelper",
                             "setViewPagerAdapter",
                             "(Ljava/lang/Object;)V", false);
                 }
