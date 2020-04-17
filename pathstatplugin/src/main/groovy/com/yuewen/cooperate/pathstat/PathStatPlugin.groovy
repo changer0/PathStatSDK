@@ -15,8 +15,9 @@ class PathStatPlugin implements Plugin<Project> {
         println "===================="
         println "PathStatPlugin Start"
         println "===================="
+        project.extensions.create("pathStatPlugin", PathExtensions, project)
         def android = project.extensions.getByType(AppExtension)
         //注册 Transform，操作 class 文件
-        android.registerTransform(new PathStatTransform())
+        android.registerTransform(new PathStatTransform(project))
     }
 }

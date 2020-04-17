@@ -3,6 +3,8 @@ package com.example.jumppathdemo
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.yuewen.cooperate.pathstat.IGetPathStatInfo
 import com.yuewen.cooperate.pathstat.IPathStatViewPagerFragmentAdapter
 import com.yuewen.cooperate.pathstat.PathStatInfo
@@ -21,7 +23,7 @@ class ViewPagerActivity : FragmentActivity(), IGetPathStatInfo {
         viewpager.currentItem = 0
     }
 
-    class MyAdapter(fm: FragmentManager) : SlipedFragmentStatePagerAdapter(fm),
+    class MyAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm),
         IPathStatViewPagerFragmentAdapter {
         override fun getItem(position: Int): BaseFragment {
             val viewPagerFragment = ViewPagerFragment()

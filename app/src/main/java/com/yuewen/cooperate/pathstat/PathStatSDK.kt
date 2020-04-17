@@ -27,6 +27,11 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     private object Holder {
         val instance = PathStatSDK()
     }
+
+    /**
+     * 配置信息
+     */
+    public lateinit var config: PathStatConfig
     /**
      * 路径统计会话 ID
      */
@@ -56,15 +61,11 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     private var fragmentNum: Int = 0
 
     /**
-     * 上报回调
-     */
-    private lateinit var statListener: (statInfo: PathStatInfo) -> Unit
-    /**
      * 初始化方法
      */
-    public fun init(application: Application, statListener: (statInfo: PathStatInfo) -> Unit) {
-        this.statListener = statListener
-        application.registerActivityLifecycleCallbacks(this)
+    public fun init(config: PathStatConfig) {
+        this.config = config
+        config.application.registerActivityLifecycleCallbacks(this)
     }
 
     /**
@@ -144,6 +145,9 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
         if (view is ViewPager) {
             return true
         }
+        if (config.customViewPagerClass?.contains(view.javaClass.name) == true) {
+            return true
+        }
         if (view.parent !is View) {
             return false
         }
@@ -185,6 +189,6 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
         pathStatInfo.curOrder = ascendOrder
         pathStatInfo.sessionId = sessionId
         Log.d(TAG, "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${pathStatInfo.sessionId}")
-        statListener(pathStatInfo)
+        config.statListener(pathStatInfo)
     }
 }

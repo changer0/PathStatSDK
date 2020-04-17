@@ -1,6 +1,6 @@
 package com.yuewen.cooperate.pathstat
 
-import com.android.build.api.transform.Context
+
 import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.Format
 import com.android.build.api.transform.JarInput
@@ -9,8 +9,8 @@ import com.android.build.api.transform.Transform
 import com.android.build.api.transform.TransformException
 import com.android.build.api.transform.TransformInput
 import com.android.build.api.transform.TransformInvocation
-import com.android.build.api.transform.TransformOutputProvider
 import com.android.build.gradle.internal.pipeline.TransformManager
+import com.yuewen.cooperate.pathstat.asm.ASMUtil
 import com.yuewen.cooperate.pathstat.asm.PathStatModify
 import com.yuewen.cooperate.pathstat.utils.TextUtil
 import groovy.io.FileType
@@ -18,13 +18,18 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
 import com.yuewen.cooperate.pathstat.utils.Logger
+import org.gradle.api.Project
 
 /**
  * 遍历所有文件更换字节码
  */
 class PathStatTransform extends Transform {
+    private Project mProject
 
-    // 设置我们自定义的Transform对应的Task名称
+    PathStatTransform(Project project) {
+        mProject = project
+    }
+// 设置我们自定义的Transform对应的Task名称
     // 类似：transformClassesWithPreDexForXXX
     // 这里应该是：transformClassesWithInjectTransformForxxx
     @Override
@@ -57,6 +62,13 @@ class PathStatTransform extends Transform {
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         this.transform(transformInvocation.getContext(), transformInvocation.getInputs(), transformInvocation.getReferencedInputs(), transformInvocation.getOutputProvider(), transformInvocation.isIncremental())
+        ASMUtil.customViewPagerClass = "${mProject.extensions.getByType(PathExtensions).getCustomViewPagerClass()}"
+        ASMUtil.isPrintAllClass = "${mProject.extensions.getByType(PathExtensions).getIsPrintAllClass()}"
+        ASMUtil.isPrintAllMethod = "${mProject.extensions.getByType(PathExtensions).getIsPrintAllMethod()}"
+        println "customViewPagerClass：${ASMUtil.customViewPagerClass}"
+        println "isPrintAllClass：${ASMUtil.isPrintAllClass}"
+        println "isPrintAllMethod：${ASMUtil.isPrintAllMethod}"
+
         Logger.info("||=================================================||")
         Logger.info("||                    开始计时                      ||")
         Logger.info("||=================================================||")

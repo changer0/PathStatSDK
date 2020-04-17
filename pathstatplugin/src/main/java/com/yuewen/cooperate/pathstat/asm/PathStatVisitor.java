@@ -33,6 +33,9 @@ class PathStatVisitor extends ClassVisitor {
         } else {
             //被过滤掉的类
         }
+        if (ASMUtil.isPrintAllClass.equals("true")) {
+            System.out.println("className: " + name);
+        }
         super.visit(version, access, name, signature, superName, interfaces);
     }
 
@@ -49,6 +52,9 @@ class PathStatVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor methodVisitor = cv.visitMethod(access, name, desc, signature, exceptions);
         MethodVisitor adapter = null;
+        if (ASMUtil.isPrintAllMethod.equals("true")) {
+            System.out.println("Method name：" + name + " desc: " + desc + " isHintClass: " + isHintClass);
+        }
         if ((isHintClass && ASMUtil.isMatchingMethod(name, desc))) {
             try {
                 adapter = ASMUtil.getMethodVisitor(mInterfaces, mClassName, superName, methodVisitor, access, name, desc);

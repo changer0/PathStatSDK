@@ -8,6 +8,27 @@ import org.objectweb.asm.MethodVisitor;
 
 public class ASMUtil {
 
+    public static String customViewPagerClass;
+    public static String isPrintAllClass = "false";
+    public static String isPrintAllMethod = "false";
+
+    private static boolean isMatchingCustomClass(String className) {
+        //用户自定义的 ViewPager
+        if (customViewPagerClass == null || customViewPagerClass.length() < 3) {
+            return false;
+        }
+        String temStr = customViewPagerClass.substring(1, customViewPagerClass.length() - 1);
+        String[] classesArray = temStr.split(",");
+        if (classesArray.length > 0) {
+            for (String viewPagerClass : classesArray) {
+                if (viewPagerClass.equals(className)) {
+                    System.out.println("存在 customViewPagerClass: " + className);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * 类是否满足匹配条件，满足的才会允许修改其中的方法
@@ -21,6 +42,10 @@ public class ASMUtil {
             System.out.println("找到 ViewPager : className:" + className);
             return true;
         }
+        if (isMatchingCustomClass(className)) {
+            return true;
+        }
+
         //剔除掉以android开头的类，即系统类，以避免出现不可预测的bug 目前没有意义！
         //if (className.startsWith("android")) {
         //    return false;
@@ -88,6 +113,7 @@ public class ASMUtil {
                             "com/yuewen/cooperate/pathstat/HockHelper",
                             "setViewPagerAdapter",
                             "(Ljava/lang/Object;)V", false);
+                    System.out.println("||* visitMethod * setViewPagerAdapter 已调用");
                 }
             };
         }
