@@ -1,4 +1,4 @@
-package com.example.jumppathdemo.pathstat
+package com.yuewen.cooperate.pathstat
 
 import android.app.Activity
 import android.app.Application

@@ -1,8 +1,8 @@
 package com.example.jumppathdemo
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-import com.example.jumppathdemo.pathstat.IGetPathStatInfo
-import com.example.jumppathdemo.pathstat.PathStatInfo
+import com.yuewen.cooperate.pathstat.IGetPathStatInfo
+import com.yuewen.cooperate.pathstat.PathStatInfo
 
 class SingleFragmentActivity : FragmentActivity(),IGetPathStatInfo {
 

@@ -1,0 +1,32 @@
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //gradle sdk
+    implementation gradleApi()
+    //groovy sdk
+    implementation localGroovy()
+    //与主工程保持一致
+    implementation 'com.android.tools.build:gradle:3.2.0'
+    implementation 'org.ow2.asm:asm:5.0.3'
+    implementation 'org.ow2.asm:asm-commons:5.0.3'
+}
+
+//def ARTIFACT_ID = 'pathStatPlugin'
+
+group = 'com.yuewen.cooperate.pathstat'
+version = "1.0.0"
+
+uploadArchives {
+    repositories {
+        flatDir {
+            dirs '../repo/'
+        }
+    }
+}

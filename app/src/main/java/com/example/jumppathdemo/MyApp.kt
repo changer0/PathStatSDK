@@ -5,7 +5,7 @@ import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.example.jumppathdemo.pathstat.PathStatSDK
+import com.yuewen.cooperate.pathstat.PathStatSDK
 
 /**
  * Created by zhanglulu on 2020/4/15.

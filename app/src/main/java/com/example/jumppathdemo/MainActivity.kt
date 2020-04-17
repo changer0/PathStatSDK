@@ -3,8 +3,8 @@ package com.example.jumppathdemo
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.jumppathdemo.pathstat.PathStatInfo
-import com.example.jumppathdemo.pathstat.PathStatSDK
+import com.yuewen.cooperate.pathstat.PathStatInfo
+import com.yuewen.cooperate.pathstat.PathStatSDK
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

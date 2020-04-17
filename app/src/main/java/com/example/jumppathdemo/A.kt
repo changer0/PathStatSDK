@@ -4,9 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.example.jumppathdemo.pathstat.IGetPathStatInfo
-import com.example.jumppathdemo.pathstat.PathStatInfo
-import com.example.jumppathdemo.pathstat.PathStatSDK
+import com.yuewen.cooperate.pathstat.IGetPathStatInfo
+import com.yuewen.cooperate.pathstat.PathStatInfo
+import com.yuewen.cooperate.pathstat.PathStatSDK
 import kotlinx.android.synthetic.main.activity_a.*
 
 class A : AppCompatActivity(), IGetPathStatInfo{

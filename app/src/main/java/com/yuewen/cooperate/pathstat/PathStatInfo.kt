@@ -1,4 +1,4 @@
-package com.example.jumppathdemo.pathstat
+package com.yuewen.cooperate.pathstat
 
 /**
  * Created by zhanglulu on 2020/4/15.

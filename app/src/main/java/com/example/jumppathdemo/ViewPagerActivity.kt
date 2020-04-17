@@ -3,9 +3,9 @@ package com.example.jumppathdemo
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.example.jumppathdemo.pathstat.IGetPathStatInfo
-import com.example.jumppathdemo.pathstat.IPathStatViewPagerFragmentAdapter
-import com.example.jumppathdemo.pathstat.PathStatInfo
+import com.yuewen.cooperate.pathstat.IGetPathStatInfo
+import com.yuewen.cooperate.pathstat.IPathStatViewPagerFragmentAdapter
+import com.yuewen.cooperate.pathstat.PathStatInfo
 import com.qq.reader.view.SlipedFragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_view_pager.*
 

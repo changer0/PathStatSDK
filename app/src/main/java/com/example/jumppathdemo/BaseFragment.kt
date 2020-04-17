@@ -3,9 +3,9 @@ package com.example.jumppathdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import com.example.jumppathdemo.pathstat.IGetPathStatInfo
-import com.example.jumppathdemo.pathstat.PathStatInfo
-import com.example.jumppathdemo.pathstat.PathStatSDK
+import com.yuewen.cooperate.pathstat.IGetPathStatInfo
+import com.yuewen.cooperate.pathstat.PathStatInfo
+import com.yuewen.cooperate.pathstat.PathStatSDK
 
 /**
  * Created by zhanglulu on 2020/4/15.

@@ -4,15 +4,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import androidx.viewpager.widget.PagerAdapter
-import com.example.jumppathdemo.pathstat.IPathStatViewPagerFragmentAdapter
-import com.example.jumppathdemo.pathstat.PathStatSDK
+import androidx.viewpager.widget.ViewPager
+import com.yuewen.cooperate.pathstat.IPathStatViewPagerFragmentAdapter
+import com.yuewen.cooperate.pathstat.PathStatSDK
 
 /**
  * Created by zhanglulu on 2020/4/15.
  * for
  */
 private const val TAG = "PathStatViewPager"
-class PathStatViewPager: WebAdViewPager {
+class PathStatViewPager: ViewPager {
 
     constructor(context: Context): super(context) {
 
