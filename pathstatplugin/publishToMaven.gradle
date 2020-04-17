@@ -1,0 +1,31 @@
+apply plugin : 'maven-publish'
+
+group = 'com.yuewen.cooperate.pathstat'
+version = "1.0.0"
+def artifactId = "pathstatplugin"
+
+def releaseRepoUrl = "http://dev.inner.yuewen.local/nexus/repository/maven-releases/"
+def snapShotsRepoUrl = "http://dev.inner.yuewen.local/nexus/repository/maven-snapshots/"
+
+//上传到nexus
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "$releaseRepoUrl") {
+                authentication(userName: "dev", password: "dev")
+            }
+            pom.version = "$project.version"
+            pom.artifactId = "$artifactId"
+            pom.groupId = "$project.group"
+        }
+    }
+}
+
+//上传到本地
+//uploadArchives {
+//    repositories {
+//        flatDir {
+//            dirs '../repo/'
+//        }
+//    }
+//}
