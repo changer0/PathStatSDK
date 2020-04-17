@@ -1,0 +1,88 @@
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+
+        // Publish an aar file per build variant. In this case a debug and a release aar file.
+        android.libraryVariants.all { variant ->
+            if (variant.buildType.name == "debug" || variant.buildType.name == "release_with_sign") {
+                return
+            }
+            println(variant.name.capitalize())
+            def hasFlavors = !variant.flavorName.isEmpty()
+            def artifactIdSuffix = ARTIFACT_ID
+            def flavorName = ""
+            if (hasFlavors) {
+                variant.productFlavors.each { flavor ->
+                    println(flavor.name)
+                    flavorName = flavor.name.capitalize()
+                    artifactIdSuffix = ARTIFACT_ID + "-" + flavor.name
+                }
+            }
+
+            "${variant.name.capitalize()}Aar"(MavenPublication) {
+                // Gets android component for build variant
+//                from components.getByName("android${variant.name.capitalize()}")
+                groupId GROUP_ID
+                artifactId artifactIdSuffix
+                version = VERSION
+                if(hasFlavors){
+                    println("bundle$flavorName"+"ReleaseAar")
+                    artifact tasks.findByName("bundle$flavorName"+"ReleaseAar")
+                }else{
+                    artifact tasks.findByName("bundleReleaseAar")
+                }
+                pom{
+                    packaging = "aar"
+                }
+                pom.withXml {
+                    final dependenciesNode = asNode().appendNode('dependencies')
+
+                    ext.addDependency = { Dependency dep, String scope ->
+                        if (dep.group == null || dep.version == null || dep.name == null || dep.name == "unspecified" || dep.version == "unspecified")
+                            return // ignore invalid dependencies
+
+                        final dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', dep.group)
+                        dependencyNode.appendNode('artifactId', dep.name)
+                        dependencyNode.appendNode('version', dep.version)
+                        dependencyNode.appendNode('scope', scope)
+
+                        if (!dep.transitive) {
+                            // If this dependency is transitive, we should force exclude all its dependencies them from the POM
+                            final exclusionNode = dependencyNode.appendNode('exclusions').appendNode('exclusion')
+                            exclusionNode.appendNode('groupId', '*')
+                            exclusionNode.appendNode('artifactId', '*')
+                        } else if (!dep.properties.excludeRules.empty) {
+                            // Otherwise add specified exclude rules
+                            final exclusionNode = dependencyNode.appendNode('exclusions').appendNode('exclusion')
+                            dep.properties.excludeRules.each { ExcludeRule rule ->
+                                exclusionNode.appendNode('groupId', rule.group ?: '*')
+                                exclusionNode.appendNode('artifactId', rule.module ?: '*')
+                            }
+                        }
+                    }
+
+                    // List all "compile" dependencies (for old Gradle)
+                    configurations.compile.getDependencies().each { dep -> addDependency(dep, "compile") }
+                    // List all "api" dependencies (for new Gradle) as "compile" dependencies
+                    configurations.api.getDependencies().each { dep -> addDependency(dep, "compile") }
+                    // List all "implementation" dependencies (for new Gradle) as "runtime" dependencies
+                    configurations.implementation.getDependencies().each { dep -> addDependency(dep, "runtime") }
+                }
+            }
+        }
+    }
+}
+
+publishing.repositories{
+    maven{
+        def releaseRepoUrl = "http://dev.inner.yuewen.local/nexus/repository/maven-releases/"
+        def snapShotsRepoUrl = "http://dev.inner.yuewen.local/nexus/repository/maven-snapshots/"
+        url = version.endsWith('SNAPSHOT') ? snapShotsRepoUrl : releaseRepoUrl
+        credentials{
+            username "dev"
+            password "dev"
+        }
+    }
+}
