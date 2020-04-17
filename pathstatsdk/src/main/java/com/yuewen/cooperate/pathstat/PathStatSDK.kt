@@ -158,7 +158,7 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     /**
      * 解析 PathStatInfo
      */
-    internal fun analyseStatPathInfo(target: Any):PathStatInfo {
+    public fun analyseStatPathInfo(target: Any):PathStatInfo {
         return if (target is IGetPathStatInfo) {
             target.getPathStatInfo()
         } else {

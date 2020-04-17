@@ -116,7 +116,7 @@ public class HockHelper {
             Log.e(TAG, "statPathInfo: 既然使用了原生的 ViewPager 就请使用系统的 FragmentAdapter" );
             return;
         }
-        PathStatInfo pathStatInfo = PathStatSDK.get().analyseStatPathInfo$pathstatsdk_debug(item);
+        PathStatInfo pathStatInfo = PathStatSDK.get().analyseStatPathInfo(item);
         PathStatSDK.get().statPathInfo(pathStatInfo);
     }
 }
