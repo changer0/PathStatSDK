@@ -40,6 +40,6 @@ dependencies {
     if (isSourceCode.toBoolean()) {
         implementation project(':pathstatsdk')
     } else {
-        implementation 'com.yuewen.cooperate.pathstat:pathstatsdk:1.0.0'
+        implementation 'com.yuewen.cooperate.pathstat:pathstatsdk:1.0.2'
     }
 }
