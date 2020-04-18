@@ -112,6 +112,7 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
 
     //----------------------------------------------------------------------------------------------
     // Fragment 生命周期回调
+    private val fragmentAlreadyStatTag = "path_stat_fragment_already"
     public fun onFragmentCreate(fragment: Fragment?) {
         fragmentNum++
     }
@@ -126,7 +127,11 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             //嵌套在 ViewPage 中的 Fragment 此处不做上报
             return
         }
-        statPathInfo(analyseStatPathInfo(fragment))
+        val isAlreadyStat = fragment.arguments?.getBoolean(fragmentAlreadyStatTag)?:false
+        //说明在 SetUserVisibleHint 已经上报过, onStart 不可再报
+        if (!isAlreadyStat) {
+            statPathInfo(analyseStatPathInfo(fragment))
+        }
         curFragment = fragment
     }
     public fun onFragmentDestroy(fragment: Fragment?) {
@@ -142,7 +147,16 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      */
     public fun onFragmentSetUserVisibleHint(fragment: Fragment, isVisibleToUser: Boolean) {
         if (isVisibleToUser) {
-            statPathInfo(analyseStatPathInfo(fragment))
+            val isStat = statPathInfo(analyseStatPathInfo(fragment))
+            if (isStat) {
+                var arguments = fragment.arguments
+                if (arguments === null) {
+                    arguments = Bundle();
+                }
+                arguments.putBoolean(fragmentAlreadyStatTag, true)
+            }
+        } else {
+            fragment.arguments?.putBoolean(fragmentAlreadyStatTag, false)
         }
     }
     // Fragment 生命周期回调 end
@@ -189,15 +203,16 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      * 上报 PathInfo
      * 外部可手动调用，强制上报，针对一些非 Activity 切换场景
      */
-    public fun statPathInfo(pathStatInfo: PathStatInfo) {
+    public fun statPathInfo(pathStatInfo: PathStatInfo): Boolean {
         if (pathStatInfo.needStat.not()) {
             //无需上报
-            return
+            return false
         }
         val ascendOrder = ascendOrder()
         pathStatInfo.curOrder = ascendOrder
         pathStatInfo.sessionId = sessionId
         Log.d(TAG, "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${pathStatInfo.sessionId}")
         config.statListener(pathStatInfo)
+        return true
     }
 }
