@@ -12,16 +12,23 @@ public class HockFragment extends HockClass {
 
     public HockFragment() {
         super("androidx/fragment/app/Fragment");
-        methodNameList.add(new HockMethod("onCreate", "(Landroid/os/Bundle;)V"));
-        methodNameList.add(new HockMethod("onStart", "()V"));
-        methodNameList.add(new HockMethod("onDestroy", "()V"));
+        methodNameList.add(new HockOnCreate());
+        methodNameList.add(new HockOnOnStart());
+        methodNameList.add(new HockOnDestroy());
     }
+    
+    //----------------------------------------------------------------------------------------------
+    // Hock 方法
 
-    @Override
-    public MethodVisitor insertMethod(String[] mInterfaces, String mClassName, String superName, MethodVisitor methodVisitor, int access, String methodName, String desc) {
-        MethodVisitor visitor = null;
-        if ("onCreate".equals(methodName)) {
-            visitor = new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
+    private class HockOnCreate extends HockMethod {
+
+        public HockOnCreate() {
+            super("onCreate", "(Landroid/os/Bundle;)V");
+        }
+
+        @Override
+        public MethodVisitor insertMethod(String[] mInterfaces, String mClassName, String superName, MethodVisitor methodVisitor, int access, String methodName, String desc) {
+            return new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
                 @Override
                 protected void onMethodExit(int i) {
                     super.onMethodExit(i);
@@ -35,8 +42,18 @@ public class HockFragment extends HockClass {
                     System.out.println("已插入 " + className + " " + methodName);
                 }
             };
-        } else if ("onStart".equals(methodName)) {
-            visitor = new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
+        }
+    }
+
+    private class HockOnOnStart extends HockMethod {
+
+        public HockOnOnStart() {
+            super("onStart", "()V");
+        }
+
+        @Override
+        public MethodVisitor insertMethod(String[] mInterfaces, String mClassName, String superName, MethodVisitor methodVisitor, int access, String methodName, String desc) {
+            return new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
                 @Override
                 protected void onMethodExit(int i) {
                     super.onMethodExit(i);
@@ -50,8 +67,18 @@ public class HockFragment extends HockClass {
                     System.out.println("已插入 " + className + " " + methodName);
                 }
             };
-        } else if ("onDestroy".equals(methodName)) {
-            visitor = new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
+        }
+    }
+
+    private class HockOnDestroy extends HockMethod {
+
+        public HockOnDestroy() {
+            super("onDestroy", "()V");
+        }
+
+        @Override
+        public MethodVisitor insertMethod(String[] mInterfaces, String mClassName, String superName, MethodVisitor methodVisitor, int access, String methodName, String desc) {
+            return new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
                 @Override
                 protected void onMethodExit(int i) {
                     super.onMethodExit(i);
@@ -66,6 +93,9 @@ public class HockFragment extends HockClass {
                 }
             };
         }
-        return visitor;
     }
+
+    // Hock 方法 end
+    //----------------------------------------------------------------------------------------------
+
 }

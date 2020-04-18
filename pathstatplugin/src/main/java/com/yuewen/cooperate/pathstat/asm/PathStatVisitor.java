@@ -2,6 +2,7 @@ package com.yuewen.cooperate.pathstat.asm;
 
 import com.yuewen.cooperate.pathstat.asm.hockclasses.HockClass;
 import com.yuewen.cooperate.pathstat.asm.hockclasses.HockClassManger;
+import com.yuewen.cooperate.pathstat.asm.hockclasses.HockMethod;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -61,9 +62,10 @@ class PathStatVisitor extends ClassVisitor {
         if (HockClassManger.isDebug.equals("true")) {
             System.out.println("Method name：" + name + " desc: " + desc + " mHockClass: " + mHockClass);
         }
-        if ((mHockClass != null && HockClassManger.isMatchingMethod(mHockClass, name, desc))) {
+        HockMethod hockMethod = HockClassManger.matchingMethod(mHockClass, name, desc);
+        if (hockMethod != null) {
             try {
-                adapter = mHockClass.insertMethod(mInterfaces, mClassName, superName, methodVisitor, access, name, desc);
+                adapter = hockMethod.insertMethod(mInterfaces, mClassName, superName, methodVisitor, access, name, desc);
             } catch (Exception e) {
                 e.printStackTrace();
                 adapter = null;

@@ -1,7 +1,9 @@
 package com.yuewen.cooperate.pathstat.asm.hockclasses;
 
+import org.apache.http.util.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * Created by zhanglulu on 2020/4/18.
@@ -43,22 +45,28 @@ public class HockClassManger {
     }
 
     public static HockClass matchingClass(String className) {
+        if (TextUtils.isEmpty(className)) {
+            return null;
+        }
         for (HockClass hockClass : hockClassList) {
             if (className.equals(hockClass.className)) {
                 return hockClass;
             }
         }
         if (isMatchingCustomClass(className)) {
-            return new HockViewPager();
+            return new HockViewPager(className);
         }
         return null;
     }
-    public static boolean isMatchingMethod(HockClass hockClass, String name, String desc) {
+    public static HockMethod matchingMethod(@Nullable HockClass hockClass, String name, String desc) {
+        if (hockClass == null || TextUtils.isEmpty(name) || TextUtils.isEmpty(desc)) {
+            return null;
+        }
         for (HockMethod method : hockClass.methodNameList) {
             if (name.equals(method.name) && desc.equals(method.desc)) {
-                return true;
+                return method;
             }
         }
-        return false;
+        return null;
     }
 }
