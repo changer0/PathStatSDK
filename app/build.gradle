@@ -3,9 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 //pathStat 插件
 apply plugin: 'path-stat-plugin'
-pathStatPlugin.customViewPagerClass = [
-    "com/qq/reader/widget/RankBaseViewPager"
-]
 pathStatPlugin.isDebug = true
 
 android {

@@ -84,7 +84,9 @@ class PathStatTransform extends Transform {
                         }
                         /** 获得输出文件*/
                         File dest = transformInvocation.getOutputProvider().getContentLocation(destName + "_" + hexName, jarInput.contentTypes, jarInput.scopes, Format.JAR)
-                        Logger.info("开始遍历特定jar: ${dest.absolutePath}")
+                        if (HockClassManger.isDebug == "true"){
+                            Logger.info("开始遍历特定jar: ${dest.absolutePath}")
+                        }
                         def modifiedJar = modifyJarFile(jarInput.file, transformInvocation.context.getTemporaryDir())
                         if (modifiedJar == null) {
                             modifiedJar = jarInput.file
