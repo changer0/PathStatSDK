@@ -136,6 +136,15 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             curFragment = null//防止泄露
         }
     }
+
+    /**
+     * ViewPager 嵌套 Fragment 曝光
+     */
+    public fun onFragmentSetUserVisibleHint(fragment: Fragment, isVisibleToUser: Boolean) {
+        if (isVisibleToUser) {
+            statPathInfo(analyseStatPathInfo(fragment))
+        }
+    }
     // Fragment 生命周期回调 end
     //----------------------------------------------------------------------------------------------
     private fun isViewPageFragment(view: View?):Boolean {

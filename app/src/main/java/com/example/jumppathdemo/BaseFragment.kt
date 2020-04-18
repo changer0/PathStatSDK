@@ -30,4 +30,9 @@ open class BaseFragment: Fragment(), IGetPathStatInfo {
     override fun getPathStatInfo(): PathStatInfo {
         return PathStatInfo(javaClass.name)
     }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        Log.d(TAG, "isVisibleToUser: $isVisibleToUser")
+    }
 }

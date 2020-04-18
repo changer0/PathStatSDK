@@ -8,5 +8,4 @@ import android.app.Application
  */
 class PathStatConfig (var application: Application, var statListener: (statInfo: PathStatInfo) -> Unit) {
     var customViewPagerClass: MutableList<String>? = null
-    var customViewPager: ((Any) -> Unit)? = null
 }

@@ -28,35 +28,37 @@ public class HockHelper {
      */
     public static void hockViewPagerSetAdapter(Object viewPagerObj) {
         Log.d(TAG, "成功 Hock ViewPager setAdapter：" + viewPagerObj);
-        if (viewPagerObj instanceof ViewPager) {
-            ViewPager viewPager = ((ViewPager) viewPagerObj);
-            final PagerAdapter pagerAdapter = viewPager.getAdapter();
-            Log.d(TAG, "我拿到 Adapter 了！！！" + pagerAdapter);
+// TODO: p_zlulzhang 2020/4/18 这个监听现在已没有意义，保留代码
 
-            if (viewPager.getCurrentItem() == 0) {
-                statPathInfo(pagerAdapter, 0);
-
-            }
-            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-                @Override
-                public void onPageScrollStateChanged(int state) {}
-
-                @Override
-                public void onPageSelected(int position) {
-                    Log.d(TAG, "我拿到 position 了: " + position);
-                    statPathInfo(pagerAdapter, position);
-                }
-            });
-        } else {
-            Function1<Object, Unit> customViewPager = PathStatSDK.get().getConfig().getCustomViewPager();
-            if (customViewPager != null) {
-                customViewPager.invoke(viewPagerObj);
-            } else {
-                Log.e(TAG, "setViewPagerAdapter: 你使用了非原生 ViewPager！，请配置 Config");
-            }
-        }
+//        if (viewPagerObj instanceof ViewPager) {
+//            ViewPager viewPager = ((ViewPager) viewPagerObj);
+//            final PagerAdapter pagerAdapter = viewPager.getAdapter();
+//            Log.d(TAG, "我拿到 Adapter 了！！！" + pagerAdapter);
+//
+//            if (viewPager.getCurrentItem() == 0) {
+//                statPathInfo(pagerAdapter, 0);
+//
+//            }
+//            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//                @Override
+//                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+//                @Override
+//                public void onPageScrollStateChanged(int state) {}
+//
+//                @Override
+//                public void onPageSelected(int position) {
+//                    Log.d(TAG, "我拿到 position 了: " + position);
+//                    statPathInfo(pagerAdapter, position);
+//                }
+//            });
+//        } else {
+//            Function1<Object, Unit> customViewPager = PathStatSDK.get().getConfig().getCustomViewPager();
+//            if (customViewPager != null) {
+//                customViewPager.invoke(viewPagerObj);
+//            } else {
+//                Log.e(TAG, "setViewPagerAdapter: 你使用了非原生 ViewPager！，请配置 Config");
+//            }
+//        }
     }
 
     private static void statPathInfo(PagerAdapter adapter, int pos) {
@@ -76,6 +78,15 @@ public class HockHelper {
     //----------------------------------------------------------------------------------------------
     // Hock Fragment
 
+    /**
+     * hock Fragment 的 setUserVisibleHint
+     * @param fragment
+     * @param isVisibleToUser
+     */
+    public static void hockFragmentSetUserVisibleHint(Fragment fragment, boolean isVisibleToUser) {
+        Log.d(TAG, "成功 Hock Fragment setUserVisibleHint：isVisibleToUser：" + isVisibleToUser);
+        PathStatSDK.get().onFragmentSetUserVisibleHint(fragment, isVisibleToUser);
+    }
     /**
      * Hock Fragment 的 onCreate 方法
      * @param fragment
