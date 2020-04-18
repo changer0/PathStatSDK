@@ -5,6 +5,8 @@ import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.fragment.app.FragmentStatePagerAdapter
+import com.qq.reader.widget.RankBaseViewPager
 import com.qq.reader.widget.WebAdViewPager
 import com.yuewen.cooperate.pathstat.PathStatConfig
 import com.yuewen.cooperate.pathstat.PathStatSDK
@@ -36,10 +38,23 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
                 Toast.LENGTH_SHORT
             ).show()
         }
+        //注意以下代码只有在使用自定义 ViewPager 才会使用
         pathConfig.customViewPagerClass = mutableListOf(WebAdViewPager::class.java.name)
         pathConfig.customViewPager = object : (Any) -> Unit {
             override fun invoke(p1: Any) {
                 Log.d(TAG, "自定义处理自定义 ViewPager: $p1")
+                var webAdViewPager = p1 as WebAdViewPager
+                val adapter = webAdViewPager.adapter as FragmentStatePagerAdapter
+                webAdViewPager.addOnPageChangeListener(object : RankBaseViewPager.OnPageChangeListener {
+                    override fun onPageScrollStateChanged(state: Int) {}
+                    override fun onPageScrolled( position: Int,positionOffset: Float,positionOffsetPixels: Int) {}
+                    override fun onPageSelected(position: Int) {
+                        PathStatSDK.get().statPathInfo(PathStatSDK.get().analyseStatPathInfo(adapter.getItem(position)))
+                    }
+                })
+                if (webAdViewPager.currentItem == 0) {
+                    PathStatSDK.get().statPathInfo(PathStatSDK.get().analyseStatPathInfo(adapter.getItem(0)))
+                }
             }
         }
         PathStatSDK.get().init(pathConfig)
