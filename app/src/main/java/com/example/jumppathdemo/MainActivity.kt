@@ -24,5 +24,8 @@ class MainActivity : AppCompatActivity() {
         singleFragment.setOnClickListener {
             startActivity(Intent(this, SingleFragmentActivity::class.java))
         }
+        customViewPager.setOnClickListener {
+            startActivity(Intent(this, CustomViewPagerActivity::class.java))
+        }
     }
 }

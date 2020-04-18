@@ -23,7 +23,14 @@
 
     <Button
         android:id="@+id/viewpager"
-        android:text="Fragment ViewPager"
+        android:text="原生 ViewPager 嵌套 Fragment"
+        android:textAllCaps="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/customViewPager"
+        android:text="自定义 ViewPager 嵌套 Fragment"
         android:textAllCaps="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

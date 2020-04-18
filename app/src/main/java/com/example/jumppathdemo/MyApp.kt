@@ -39,7 +39,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         pathConfig.customViewPagerClass = mutableListOf(WebAdViewPager::class.java.name)
         pathConfig.customViewPager = object : (Any) -> Unit {
             override fun invoke(p1: Any) {
-
+                Log.d(TAG, "自定义处理自定义 ViewPager: $p1")
             }
         }
         PathStatSDK.get().init(pathConfig)
