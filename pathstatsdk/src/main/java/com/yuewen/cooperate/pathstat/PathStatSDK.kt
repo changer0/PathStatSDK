@@ -151,7 +151,8 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             if (isStat) {
                 var arguments = fragment.arguments
                 if (arguments === null) {
-                    arguments = Bundle();
+                    arguments = Bundle()
+                    fragment.arguments = arguments
                 }
                 arguments.putBoolean(fragmentAlreadyStatTag, true)
             }
