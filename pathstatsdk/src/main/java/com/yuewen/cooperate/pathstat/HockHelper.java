@@ -82,6 +82,7 @@ public class HockHelper {
      */
     public static void hockFragmentOnCreate(Fragment fragment) {
         Log.d(TAG, "成功 Hock Fragment onCreate：" + fragment);
+        PathStatSDK.get().onFragmentCreate(fragment);
     }
 
     /**
@@ -90,6 +91,7 @@ public class HockHelper {
      */
     public static void hockFragmentOnStart(Fragment fragment) {
         Log.d(TAG, "成功 Hock Fragment onStart：" + fragment);
+        PathStatSDK.get().onFragmentStart(fragment);
     }
 
     /**
@@ -98,6 +100,7 @@ public class HockHelper {
      */
     public static void hockFragmentOnDestroy(Fragment fragment) {
         Log.d(TAG, "成功 Hock Fragment OnDestroy：" + fragment);
+        PathStatSDK.get().onFragmentDestroy(fragment);
     }
     // Hock Fragment end
     //----------------------------------------------------------------------------------------------

@@ -15,18 +15,16 @@ private const val TAG = "BaseFragment"
 open class BaseFragment: Fragment(), IGetPathStatInfo {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PathStatSDK.get().onFragmentCreate(this)
+
     }
 
     override fun onStart()  {
         super.onStart()
         Log.d(TAG, this.javaClass.name)
-        PathStatSDK.get().onFragmentStart(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        PathStatSDK.get().onFragmentDestroy(this)
     }
 
     override fun getPathStatInfo(): PathStatInfo {
