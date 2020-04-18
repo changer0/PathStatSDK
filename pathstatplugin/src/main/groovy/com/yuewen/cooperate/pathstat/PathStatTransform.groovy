@@ -10,7 +10,7 @@ import com.android.build.api.transform.TransformException
 import com.android.build.api.transform.TransformInput
 import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.internal.pipeline.TransformManager
-import com.yuewen.cooperate.pathstat.asm.ASMUtil
+import com.yuewen.cooperate.pathstat.asm.hockclasses.HockClassManger
 import com.yuewen.cooperate.pathstat.asm.PathStatModify
 import com.yuewen.cooperate.pathstat.utils.TextUtil
 import groovy.io.FileType
@@ -62,12 +62,10 @@ class PathStatTransform extends Transform {
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         this.transform(transformInvocation.getContext(), transformInvocation.getInputs(), transformInvocation.getReferencedInputs(), transformInvocation.getOutputProvider(), transformInvocation.isIncremental())
-        ASMUtil.customViewPagerClass = "${mProject.extensions.getByType(PathExtensions).getCustomViewPagerClass()}"
-        ASMUtil.isPrintAllClass = "${mProject.extensions.getByType(PathExtensions).getIsPrintAllClass()}"
-        ASMUtil.isPrintAllMethod = "${mProject.extensions.getByType(PathExtensions).getIsPrintAllMethod()}"
-        println "customViewPagerClass：${ASMUtil.customViewPagerClass}"
-        println "isPrintAllClass：${ASMUtil.isPrintAllClass}"
-        println "isPrintAllMethod：${ASMUtil.isPrintAllMethod}"
+        HockClassManger.customViewPagerClass = "${mProject.extensions.getByType(PathExtensions).getCustomViewPagerClass()}"
+        HockClassManger.isDebug = "${mProject.extensions.getByType(PathExtensions).getIsDebug()}"
+        println "customViewPagerClass：${HockClassManger.customViewPagerClass}"
+        println "idDebug：${HockClassManger.isDebug}"
 
         Logger.info("||=================================================||")
         Logger.info("||                    开始计时                      ||")

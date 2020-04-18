@@ -21,8 +21,13 @@ import kotlin.jvm.functions.Function1;
  */
 public class HockHelper {
     private static final String TAG = "HockHelper";
-    public static void setViewPagerAdapter(Object viewPagerObj) {
-        Log.d(TAG, "成功 Hock：" + viewPagerObj);
+
+    /**
+     * Hock ViewPager 的 setAdapter
+     * @param viewPagerObj
+     */
+    public static void hockViewPagerSetAdapter(Object viewPagerObj) {
+        Log.d(TAG, "成功 Hock ViewPager setAdapter：" + viewPagerObj);
         if (viewPagerObj instanceof ViewPager) {
             ViewPager viewPager = ((ViewPager) viewPagerObj);
             final PagerAdapter pagerAdapter = viewPager.getAdapter();
@@ -52,58 +57,6 @@ public class HockHelper {
                 Log.e(TAG, "setViewPagerAdapter: 你使用了非原生 ViewPager！，请配置 Config");
             }
         }
-        //这个 obj 其实是 ViewPager，但是考虑到用户完全自定义的情况需要做特殊处理
-//        try {
-//            final Class<?> viewPagerClass = viewPagerObj.getClass();
-//            Method getAdapterMethod = viewPagerClass.getDeclaredMethod("getAdapter");
-//
-//            final PagerAdapter pageAdapter = (PagerAdapter) getAdapterMethod.invoke(viewPagerObj);
-//            Class<? extends PagerAdapter> pageAdapterClass = pageAdapter.getClass();
-//
-//            Method getCurrentItemMethod = viewPagerClass.getDeclaredMethod("getCurrentItem");
-//            Integer curItem = (Integer) getCurrentItemMethod.invoke(viewPagerObj);
-//            final Method getItemMethod = pageAdapterClass.getDeclaredMethod("getItem");
-//            if (curItem == 0) {
-//                statCustomViewPager(viewPagerClass, pageAdapter, getItemMethod);
-//            }
-//
-//            //设置监听
-//            ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
-//                @Override
-//                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
-//                @Override
-//                public void onPageScrollStateChanged(int state) {}
-//                @Override
-//                public void onPageSelected(int position) {
-//                    Log.d(TAG, "我拿到 position 了: " + position);
-//                    try {
-//                        statCustomViewPager(viewPagerClass, pageAdapter, getItemMethod);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            };
-//            Method addOnPageChangeListenerMethod = viewPagerClass.getDeclaredMethod("addOnPageChangeListener");
-//            addOnPageChangeListenerMethod.invoke(viewPagerObj, onPageChangeListener);
-//        } catch (Exception e) {
-//            Log.e(TAG, "setViewPagerAdapter: ？？？你需要考虑下面几个个问题：\n" +
-//                    "1，是不是没用系统的 ViewPager " +
-//                    "2，是不是没有在 gradle 和 init 时配置 customViewPagerClass " +
-//                    "3.你完全重写的 ViewPager 是不是没有 Adapter 的 getter 和 setter 方法 以及 addOnPageChangeListener 方法");
-//            e.printStackTrace();
-//        }
-
-    }
-
-    private static void statCustomViewPager(Class<?> viewPagerClass, PagerAdapter pageAdapter, Method getItemMethod) throws IllegalAccessException, InvocationTargetException {
-        Object objItem = getItemMethod.invoke(pageAdapter, 0);
-        PathStatInfo pathStatInfo = null;
-        if (objItem instanceof IGetPathStatInfo) {
-            pathStatInfo = ((IGetPathStatInfo) objItem).getPathStatInfo();
-        } else {
-            pathStatInfo = new PathStatInfo(viewPagerClass.getName());
-        }
-        PathStatSDK.get().statPathInfo(pathStatInfo);
     }
 
     private static void statPathInfo(PagerAdapter adapter, int pos) {
@@ -119,4 +72,34 @@ public class HockHelper {
         PathStatInfo pathStatInfo = PathStatSDK.get().analyseStatPathInfo(item);
         PathStatSDK.get().statPathInfo(pathStatInfo);
     }
+
+    //----------------------------------------------------------------------------------------------
+    // Hock Fragment
+
+    /**
+     * Hock Fragment 的 onCreate 方法
+     * @param fragment
+     */
+    public static void hockFragmentOnCreate(Fragment fragment) {
+        Log.d(TAG, "成功 Hock Fragment onCreate：" + fragment);
+    }
+
+    /**
+     * Hock Fragment 的 onStart 方法
+     * @param fragment
+     */
+    public static void hockFragmentOnStart(Fragment fragment) {
+        Log.d(TAG, "成功 Hock Fragment onStart：" + fragment);
+    }
+
+    /**
+     * Hock Fragment 的 onDestroy 方法
+     * @param fragment
+     */
+    public static void hockFragmentOnDestroy(Fragment fragment) {
+        Log.d(TAG, "成功 Hock Fragment OnDestroy：" + fragment);
+    }
+    // Hock Fragment end
+    //----------------------------------------------------------------------------------------------
+
 }

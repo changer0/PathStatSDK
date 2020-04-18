@@ -1,8 +1,13 @@
 package com.yuewen.cooperate.pathstat.asm;
 
+import com.yuewen.cooperate.pathstat.asm.hockclasses.HockClass;
+import com.yuewen.cooperate.pathstat.asm.hockclasses.HockClassManger;
+
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+
+import javax.annotation.Nullable;
 
 /**
  * ASM 类观察者
@@ -12,7 +17,8 @@ class PathStatVisitor extends ClassVisitor {
     private String mClassName;
     private String[] mInterfaces;
     private String superName;
-    private boolean isHintClass = false;
+    @Nullable
+    private HockClass mHockClass;
 
     PathStatVisitor() {
         super(Opcodes.ASM4);
@@ -26,14 +32,14 @@ class PathStatVisitor extends ClassVisitor {
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         mClassName = name;
         mInterfaces = interfaces;
-        isHintClass = ASMUtil.isMatchingClass(name, interfaces);
+        mHockClass = HockClassManger.matchingClass(name);
         this.superName = superName;
-        if (isHintClass) {
+        if (mHockClass != null) {
             System.out.println("---------开始遍历类 Start---------");
         } else {
             //被过滤掉的类
         }
-        if (ASMUtil.isPrintAllClass.equals("true")) {
+        if (HockClassManger.isDebug.equals("true")) {
             System.out.println("className: " + name);
         }
         super.visit(version, access, name, signature, superName, interfaces);
@@ -52,12 +58,12 @@ class PathStatVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor methodVisitor = cv.visitMethod(access, name, desc, signature, exceptions);
         MethodVisitor adapter = null;
-        if (ASMUtil.isPrintAllMethod.equals("true")) {
-            System.out.println("Method name：" + name + " desc: " + desc + " isHintClass: " + isHintClass);
+        if (HockClassManger.isDebug.equals("true")) {
+            System.out.println("Method name：" + name + " desc: " + desc + " mHockClass: " + mHockClass);
         }
-        if ((isHintClass && ASMUtil.isMatchingMethod(name, desc))) {
+        if ((mHockClass != null && HockClassManger.isMatchingMethod(mHockClass, name, desc))) {
             try {
-                adapter = ASMUtil.getMethodVisitor(mInterfaces, mClassName, superName, methodVisitor, access, name, desc);
+                adapter = mHockClass.insertMethod(mInterfaces, mClassName, superName, methodVisitor, access, name, desc);
             } catch (Exception e) {
                 e.printStackTrace();
                 adapter = null;
@@ -74,8 +80,8 @@ class PathStatVisitor extends ClassVisitor {
 
     @Override
     public void visitEnd() {
-        if (isHintClass) {
-            System.out.println("---------开始遍历类 Start---------");
+        if (mHockClass != null) {
+            System.out.println("---------开始遍历类 End--------");
         }
         super.visitEnd();
     }
