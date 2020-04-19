@@ -38,8 +38,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
                 Toast.LENGTH_SHORT
             ).show()
         }
-        //注意以下代码只有在使用自定义 ViewPager 才会使用
-        pathConfig.customViewPagerClass = mutableListOf(WebAdViewPager::class.java.name)
         PathStatSDK.get().init(pathConfig)
         Log.d(TAG, "APP_SESSION_ID: ${PathStatSDK.get().sessionId}")
     }

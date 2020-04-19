@@ -4,9 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import java.util.*
 
 
@@ -112,7 +110,7 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
 
     //----------------------------------------------------------------------------------------------
     // Fragment 生命周期回调
-    private val fragmentAlreadyStatTag = "path_stat_fragment_already"
+    private val fragmentSetUserVisibleHintTag = "path_stat_fragment_set_user_visible"
     public fun onFragmentCreate(fragment: Fragment?) {
         fragmentNum++
     }
@@ -123,15 +121,14 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
         if (curFragment === fragment) {
             return
         }
-        if (isViewPageFragment(fragment.view)) {
-            //嵌套在 ViewPage 中的 Fragment 此处不做上报
+
+
+        val fragmentSetUserVisibleHint = fragment.arguments?.getBoolean(fragmentSetUserVisibleHintTag)?:false
+        //如果已经被 setUserVisibleHint 托管，就无需走 onStart 曝光
+        if (fragmentSetUserVisibleHint) {
             return
         }
-        val isAlreadyStat = fragment.arguments?.getBoolean(fragmentAlreadyStatTag)?:false
-        //说明在 SetUserVisibleHint 已经上报过, onStart 不可再报
-        if (!isAlreadyStat) {
-            statPathInfo(analyseStatPathInfo(fragment))
-        }
+        statPathInfo(analyseStatPathInfo(fragment))
         curFragment = fragment
     }
     public fun onFragmentDestroy(fragment: Fragment?) {
@@ -147,37 +144,18 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      */
     public fun onFragmentSetUserVisibleHint(fragment: Fragment, isVisibleToUser: Boolean) {
         if (isVisibleToUser) {
-            val isStat = statPathInfo(analyseStatPathInfo(fragment))
-            if (isStat) {
-                var arguments = fragment.arguments
-                if (arguments === null) {
-                    arguments = Bundle()
-                    fragment.arguments = arguments
-                }
-                arguments.putBoolean(fragmentAlreadyStatTag, true)
-            }
-        } else {
-            fragment.arguments?.putBoolean(fragmentAlreadyStatTag, false)
+            statPathInfo(analyseStatPathInfo(fragment))
         }
+        //通知 onStart 已被 setUserVisibleHint 托管
+        var arguments = fragment.arguments
+        if (arguments === null) {
+            arguments = Bundle()
+            fragment.arguments = arguments
+        }
+        arguments.putBoolean(fragmentSetUserVisibleHintTag, true)
     }
     // Fragment 生命周期回调 end
     //----------------------------------------------------------------------------------------------
-    private fun isViewPageFragment(view: View?):Boolean {
-        if (view == null) {
-            return false
-        }
-        if (view is ViewPager) {
-            return true
-        }
-        if (config.customViewPagerClass?.contains(view.javaClass.name) == true) {
-            return true
-        }
-        if (view.parent !is View) {
-            return false
-        }
-        return isViewPageFragment(view.parent as View)
-
-    }
 
     /**
      * 解析 PathStatInfo
