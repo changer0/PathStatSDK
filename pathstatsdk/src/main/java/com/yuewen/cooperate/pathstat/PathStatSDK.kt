@@ -122,7 +122,6 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             return
         }
 
-
         val fragmentSetUserVisibleHint = fragment.arguments?.getBoolean(fragmentSetUserVisibleHintTag)?:false
         //如果已经被 setUserVisibleHint 托管，就无需走 onStart 曝光
         if (fragmentSetUserVisibleHint) {
@@ -185,6 +184,9 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     public fun statPathInfo(pathStatInfo: PathStatInfo): Boolean {
         if (pathStatInfo.needStat.not()) {
             //无需上报
+            return false
+        }
+        if (config.avoidClassNames.contains(pathStatInfo.pn)) {
             return false
         }
         val ascendOrder = ascendOrder()
