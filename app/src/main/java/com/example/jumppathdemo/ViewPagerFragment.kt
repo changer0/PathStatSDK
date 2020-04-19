@@ -1,5 +1,6 @@
 package com.example.jumppathdemo
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,10 @@ class ViewPagerFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fragment_text.text = arguments?.getString("text")
+
+        fragment_text.setOnClickListener {
+            startActivity(Intent(activity, SingleFragmentActivity::class.java))
+        }
     }
 
     override fun getPathStatInfo(): PathStatInfo {

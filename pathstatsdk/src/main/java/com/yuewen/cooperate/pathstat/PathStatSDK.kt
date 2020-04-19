@@ -110,7 +110,8 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
 
     //----------------------------------------------------------------------------------------------
     // Fragment 生命周期回调
-    private val fragmentSetUserVisibleHintTag = "path_stat_fragment_set_user_visible"
+    //是否已经上报
+    private val fragmentAlreadyStat = "path_stat_fragment_already_stat"
     public fun onFragmentCreate(fragment: Fragment?) {
         fragmentNum++
     }
@@ -119,17 +120,25 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             return
         }
         if (curFragment === fragment) {
-            return
+            return//相同 Fragment
         }
-
-        val fragmentSetUserVisibleHint = fragment.arguments?.getBoolean(fragmentSetUserVisibleHintTag)?:false
+        if (!fragment.userVisibleHint) {
+            return//非显示状态
+        }
+        val alreadyStat = fragment.arguments?.getBoolean(fragmentAlreadyStat)?:false
         //如果已经被 setUserVisibleHint 托管，就无需走 onStart 曝光
-        if (fragmentSetUserVisibleHint) {
+        if (alreadyStat) {
             return
         }
         statPathInfo(analyseStatPathInfo(fragment))
         curFragment = fragment
     }
+
+    public fun onFragmentStop(fragment: Fragment?) {
+        //Fragment 退出时，将已经上报字段置为 false
+        fragment?.arguments?.putBoolean(fragmentAlreadyStat, false)
+    }
+
     public fun onFragmentDestroy(fragment: Fragment?) {
         fragmentNum--
         Log.d(TAG, "onFragmentDestroy fragmentNum: $fragmentNum")
@@ -143,15 +152,15 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      */
     public fun onFragmentSetUserVisibleHint(fragment: Fragment, isVisibleToUser: Boolean) {
         if (isVisibleToUser) {
-            statPathInfo(analyseStatPathInfo(fragment))
+            val alreadyStat = statPathInfo(analyseStatPathInfo(fragment))
+            //通知 onStart 已被 setUserVisibleHint 托管
+            var arguments = fragment.arguments
+            if (arguments === null) {
+                arguments = Bundle()
+                fragment.arguments = arguments
+            }
+            arguments.putBoolean(fragmentAlreadyStat, alreadyStat)
         }
-        //通知 onStart 已被 setUserVisibleHint 托管
-        var arguments = fragment.arguments
-        if (arguments === null) {
-            arguments = Bundle()
-            fragment.arguments = arguments
-        }
-        arguments.putBoolean(fragmentSetUserVisibleHintTag, true)
     }
     // Fragment 生命周期回调 end
     //----------------------------------------------------------------------------------------------

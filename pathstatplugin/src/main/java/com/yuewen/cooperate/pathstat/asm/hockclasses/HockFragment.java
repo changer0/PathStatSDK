@@ -14,6 +14,7 @@ public class HockFragment extends HockClass {
         super("androidx/fragment/app/Fragment");
         methodNameList.add(new HockOnCreate());
         methodNameList.add(new HockOnOnStart());
+        methodNameList.add(new HockOnOnStop());
         methodNameList.add(new HockOnDestroy());
         methodNameList.add(new HockSetUserVisibleHint());
     }
@@ -64,6 +65,31 @@ public class HockFragment extends HockClass {
                     methodVisitor.visitMethodInsn(INVOKESTATIC,
                             "com/yuewen/cooperate/pathstat/HockHelper",
                             "hockFragmentOnStart",
+                            "(Landroidx/fragment/app/Fragment;)V", false);
+                    System.out.println("已插入 " + className + " " + methodName);
+                }
+            };
+        }
+    }
+
+    private class HockOnOnStop extends HockMethod {
+
+        public HockOnOnStop() {
+            super("onStop", "()V");
+        }
+
+        @Override
+        public MethodVisitor insertMethod(String[] mInterfaces, String mClassName, String superName, MethodVisitor methodVisitor, int access, String methodName, String desc) {
+            return new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
+                @Override
+                protected void onMethodExit(int i) {
+                    super.onMethodExit(i);
+                    // ALOAD 获取类对象本身
+                    methodVisitor.visitVarInsn(ALOAD, 0);
+                    // INVOKESTATIC INVOKESTATIC
+                    methodVisitor.visitMethodInsn(INVOKESTATIC,
+                            "com/yuewen/cooperate/pathstat/HockHelper",
+                            "hockFragmentOnStop",
                             "(Landroidx/fragment/app/Fragment;)V", false);
                     System.out.println("已插入 " + className + " " + methodName);
                 }

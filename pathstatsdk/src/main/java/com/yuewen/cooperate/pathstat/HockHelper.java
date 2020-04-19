@@ -106,6 +106,15 @@ public class HockHelper {
     }
 
     /**
+     * Hock Fragment 的 onStart 方法
+     * @param fragment
+     */
+    public static void hockFragmentOnStop(Fragment fragment) {
+        Log.d(TAG, "成功 Hock Fragment onStop：" + fragment);
+        PathStatSDK.get().onFragmentStop(fragment);
+    }
+
+    /**
      * Hock Fragment 的 onDestroy 方法
      * @param fragment
      */
