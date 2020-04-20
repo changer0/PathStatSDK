@@ -221,12 +221,15 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      * 解析 PathStatInfo
      */
     public fun analyseStatPathInfo(target: Any):PathStatInfo {
-        return if (target is IGetPathStatInfo) {
+
+        val pathStatInfo = if (target is IGetPathStatInfo) {
             target.getPathStatInfo()
         } else {
             //统计信息未设置，使用默认的 Fragment 类名
             PathStatInfo(target.javaClass.name)
         }
+        pathStatInfo.className = target.javaClass.name
+        return pathStatInfo
     }
 
     /**
@@ -256,14 +259,18 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             //无需上报
             return false
         }
-        //如果该类名在黑名单内，不上报
-        if (config.containsPackageBlackList(pathStatInfo.pn)) {
-            return false
+        // className 可能为空，手动上报！！
+        if (pathStatInfo.className.isNotEmpty()) {
+            //如果该类名在黑名单内，不上报
+            if (config.containsPackageBlackList(pathStatInfo.className)) {
+                return false
+            }
+            //如果该类名不在白名单内，不上报
+            if (!config.containsPackageWhiteList(pathStatInfo.className)) {
+                return false
+            }
         }
-        //如果该类名不在白名单内，不上报
-        if (!config.containsPackageWhiteList(pathStatInfo.pn)) {
-            return false
-        }
+
         //上报序号增 1
         pathStatInfo.curOrder =  pageState!!.order+1
         pageState!!.order = pathStatInfo.curOrder

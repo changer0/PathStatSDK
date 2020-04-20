@@ -27,4 +27,9 @@ class PathStatInfo(var pn: String = "") {
      * 会话 Id
      */
     var sessionId: String = ""
+
+    /**
+     * 类名
+     */
+    var className: String = ""
 }
