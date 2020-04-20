@@ -88,3 +88,10 @@ PathStatSDK.get().init(pathConfig)
 ``` kotlin
 PathStatSDK.get().statPathInfo(PathStatInfo("手动上报"))
 ```
+
+
+## 四、注意事项
+
+1、如果不自定义页面名称，将会返回当前页面对应类的包名+类名，所以如果不设置页面名称则需要要求当前页面对应的类不要混淆；
+
+2、有些 Tab 切换 Fragment 的场景，例如主页面中点击底部 Tab 切换 Fragment，则需要使用方手动调用 Fragment 的 setUserVisibleHint 方法。
