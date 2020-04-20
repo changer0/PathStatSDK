@@ -69,13 +69,23 @@ class ViewPagerActivity : FragmentActivity(), IGetPathStatInfo {
 }
 ```
 
-第二种：初始化时调用 PathStatConfig 时调用 addAvoidClassName 方法，传入需要屏蔽的类：
+第二种：黑白名单设置方式，初始化时调用 PathStatConfig 时调用 addPageNameBlackList 方法，传入需要屏蔽的包名：
 
 ``` kotlin
 val pathConfig = PathStatConfig(this){
     //...
 }
-pathConfig.addAvoidClassName("com.xx.xx.Fragment")
+pathConfig.addPageNameBlackList("com.xx.xx")
+PathStatSDK.get().init(pathConfig)
+```
+
+或者如果只想在某些包名下的类进行上报，可以通过设置白名单的方式，特别的，如果用户不设置白名单，默认的都上报：
+
+``` kotlin
+val pathConfig = PathStatConfig(this){
+    //...
+}
+pathConfig.addPageNameWhiteList("com.xx.xx")
 PathStatSDK.get().init(pathConfig)
 ```
 
