@@ -1,2 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pathstatsdk" />
+    package="com.example.pathstatsdk">
+
+    <application>
+        <service
+            android:name="com.yuewen.cooperate.pathstat.PageStateService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
+    </application>
+
+</manifest>

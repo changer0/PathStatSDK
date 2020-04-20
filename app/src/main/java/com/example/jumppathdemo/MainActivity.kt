@@ -31,5 +31,8 @@ class MainActivity : AppCompatActivity() {
         blackActivity.setOnClickListener {
             startActivity(Intent(this, BlackListActivity::class.java))
         }
+        newProgressActivity.setOnClickListener {
+            startActivity(Intent(this, NewProgressActivity::class.java))
+        }
     }
 }

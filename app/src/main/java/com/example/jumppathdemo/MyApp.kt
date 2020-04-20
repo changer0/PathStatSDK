@@ -39,9 +39,8 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
             ).show()
         }
         //pathConfig.addPageNameBlackList("com.qq.reader")
-        pathConfig.addPageNameWhiteList("com.example.jumppathdemo")
+        //pathConfig.addPageNameWhiteList("com.example.jumppathdemo")
         PathStatSDK.get().init(pathConfig)
-        Log.d(TAG, "APP_SESSION_ID: ${PathStatSDK.get().sessionId}")
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {

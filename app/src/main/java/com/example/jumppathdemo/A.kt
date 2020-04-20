@@ -16,7 +16,6 @@ class A : AppCompatActivity(), IGetPathStatInfo{
         setContentView(R.layout.activity_a)
         jump.setOnClickListener {
             startActivity(Intent(this, B::class.java))
-            Log.d("MyApp", "APP_SESSION_ID: ${PathStatSDK.get().sessionId}")
         }
     }
 
