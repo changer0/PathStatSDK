@@ -44,7 +44,7 @@ PathStatSDK.get().init(pathConfig)
 
 ## 三、特殊场景上报
 
-1. 自定义 pn
+1、 自定义 pn
 
 ``` kotlin
 class A : AppCompatActivity(), IGetPathStatInfo{
@@ -55,7 +55,7 @@ class A : AppCompatActivity(), IGetPathStatInfo{
 }
 ```
 
-2. 屏蔽当前页面上报
+2、 屏蔽当前页面上报
 
 目前有两种方式：
 
@@ -81,7 +81,7 @@ PathStatSDK.get().init(pathConfig)
 
 > 【注】有些非自定义的类只能采用第二种方式实现，例如第三方库中的一些 Fragment；另外，如果使用第二种方式需要注意 **避免混淆**！
 
-3. 手动上报
+3、 手动上报
 
 针对某些特殊场景，提供手动上报方式，调用 statPathInfo 即可：
 
