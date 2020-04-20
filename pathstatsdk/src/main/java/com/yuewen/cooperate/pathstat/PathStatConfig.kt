@@ -8,14 +8,45 @@ import android.app.Application
  */
 class PathStatConfig (var application: Application, var statListener: (statInfo: PathStatInfo) -> Unit) {
     /**
-     * 需要屏蔽的类名
+     * 黑名单包名
      */
-    var avoidClassNames = mutableListOf<String>()
+    private var packageNameBlackList = mutableListOf<String>()
+
+    /**
+     * 白名单包名
+     */
+    private var packageNameWhiteList = mutableListOf<String>()
+
     init {
         //需要固定的可以往这儿添加
-        avoidClassNames.add("com.bumptech.glide.manager.SupportRequestManagerFragment")
+        packageNameBlackList.add("com.bumptech.glide.manager.SupportRequestManagerFragment")
     }
-    public fun addAvoidClassName(className: String) {
-        avoidClassNames.add(className)
+    public fun addPageNameBlackList(className: String) {
+        packageNameBlackList.add(className)
+    }
+    public fun addPageNameWhiteList(className: String) {
+        packageNameWhiteList.add(className)
+    }
+
+    fun containsPackageBlackList(pageName: String): Boolean {
+        for (p in packageNameBlackList) {
+            if (pageName.startsWith(p)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun containsPackageWhiteList(pageName: String): Boolean {
+        //特别的，如果用户不设置白名单，默认的都上报
+        if (packageNameWhiteList.size <= 0) {
+            return true
+        }
+        for (p in packageNameWhiteList) {
+            if (pageName.startsWith(p)) {
+                return true
+            }
+        }
+        return false
     }
 }

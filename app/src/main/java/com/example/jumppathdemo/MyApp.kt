@@ -38,6 +38,8 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
                 Toast.LENGTH_SHORT
             ).show()
         }
+        //pathConfig.addPageNameBlackList("com.qq.reader")
+        pathConfig.addPageNameWhiteList("com.example.jumppathdemo")
         PathStatSDK.get().init(pathConfig)
         Log.d(TAG, "APP_SESSION_ID: ${PathStatSDK.get().sessionId}")
     }

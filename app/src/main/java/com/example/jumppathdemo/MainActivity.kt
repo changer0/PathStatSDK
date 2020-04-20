@@ -3,6 +3,7 @@ package com.example.jumppathdemo
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.qq.reader.activity.BlackListActivity
 import com.yuewen.cooperate.pathstat.PathStatInfo
 import com.yuewen.cooperate.pathstat.PathStatSDK
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,6 +27,9 @@ class MainActivity : AppCompatActivity() {
         }
         customViewPager.setOnClickListener {
             startActivity(Intent(this, CustomViewPagerActivity::class.java))
+        }
+        blackActivity.setOnClickListener {
+            startActivity(Intent(this, BlackListActivity::class.java))
         }
     }
 }

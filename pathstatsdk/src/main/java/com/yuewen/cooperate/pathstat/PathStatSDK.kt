@@ -195,7 +195,12 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             //无需上报
             return false
         }
-        if (config.avoidClassNames.contains(pathStatInfo.pn)) {
+        //如果该类名在黑名单内，不上报
+        if (config.containsPackageBlackList(pathStatInfo.pn)) {
+            return false
+        }
+        //如果该类名不在白名单内，不上报
+        if (!config.containsPackageWhiteList(pathStatInfo.pn)) {
             return false
         }
         val ascendOrder = ascendOrder()
