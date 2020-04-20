@@ -143,82 +143,11 @@ private fun isViewPageFragment(view: View?):Boolean {
 
 问题1： 需要明确一下，独立的 Fragment 页面曝光时只会走生命周期方法，而 ViewPager 嵌套的 Fragment 即会走生命周期方法也会走 setUserVisibleHint 方法，所以需要解决重复曝光的问题。
 
-解决：通过观察 Fragment 生命周期方法和 setUserVisibleHint 的调用时机，发现 setUserVisibleHint 执行顺序在 onStart 之前，所以可以通过在 setUserVisibleHint 中添加已曝光标记来解决：
+解决：通过观察 Fragment 生命周期方法和 setUserVisibleHint 的调用时机，发现 setUserVisibleHint 执行顺序在 onStart 之前，所以可以通过在 setUserVisibleHint 中添加已曝光标记来解决，为了彻底解决 ViewPager 嵌套 Fragment 的场景，我把所涉及的场景统统列举了下来：
 
-```
-/**
- * ViewPager 嵌套 Fragment 曝光
- */
-public fun onFragmentSetUserVisibleHint(fragment: Fragment, isVisibleToUser: Boolean) {
-    if (isVisibleToUser) {
-        statPathInfo(analyseStatPathInfo(fragment))
-    }
-    //通知 onStart 已被 setUserVisibleHint 托管
-    var arguments = fragment.arguments
-    if (arguments === null) {
-        arguments = Bundle()
-        fragment.arguments = arguments
-    }
-    arguments.putBoolean(fragmentSetUserVisibleHintTag, true)
-}
-```
+![](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200420144236.png)
 
-
-```
-public fun onFragmentStart(fragment: Fragment?) {
-    //...
-    val fragmentSetUserVisibleHint =
-        fragment.arguments?.getBoolean(fragmentSetUserVisibleHintTag)?:false
-    //如果已经被 setUserVisibleHint 托管，就无需走 onStart 曝光
-    if (fragmentSetUserVisibleHint) {
-        return
-    }
-    statPathInfo(analyseStatPathInfo(fragment))
-    //...
-}
-```
-
-问题2：在实际接入发现，有些非用作页面的 Fragment 会被使用，例如：
-
-```
-PathStatSDK: 上报序号：15,
-上报 pn：com.bumptech.glide.manager.SupportRequestManagerFragment，
-SessionId：0f92784c-0c11-4979-96a1-031f664ac350
-```
-
-解决：对于已知的这种不可能需要上报的 Fragment 进行屏蔽，另外在 PathStatConfig 中暴露一个可以屏蔽这些类的上报的方法：
-
-PathStatConfig:
-
-```
-/**
- * 需要屏蔽的类名
- */
-var avoidClassNames = mutableListOf<String>()
-public fun addAvoidClassName(className: String) {
-    avoidClassNames.add(className)
-}
-
-```
-
-PathStatSDK：
-```
-public fun statPathInfo(pathStatInfo: PathStatInfo): Boolean {
-    //...
-    if (config.avoidClassNames.contains(pathStatInfo.pn)) {
-        return false
-    }
-    //...
-}
-```
-
-问题3：当做完上面的工作后没想到还有问题，发现当返回 Fragment 的场景时不能正常上报！
-
-解决：为了彻底解决 ViewPager 嵌套 Fragment 的场景，我把所涉及的场景统统列举了下来：
-
-![](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200420101951.png)
-
-通过观察分析，解决如下：
+解决如下：
 
 ```
 public fun onFragmentStart(fragment: Fragment?) {
@@ -265,6 +194,34 @@ public fun onFragmentSetUserVisibleHint(fragment: Fragment, isVisibleToUser: Boo
         arguments.putBoolean(fragmentAlreadyStat, alreadyStat)
     }
 }
+```
+
+问题2：在实际接入发现，有些非用作页面的 Fragment 会被使用，例如：
+
+```
+PathStatSDK: 上报序号：15,
+上报 pn：com.bumptech.glide.manager.SupportRequestManagerFragment，
+SessionId：0f92784c-0c11-4979-96a1-031f664ac350
+```
+
+解决：对此我们采用白名单和黑名单方式，白名单指得是可以上报包名前缀，黑名单指得是不可上报的黑名单前缀，例如：
+
+**白名单：**
+
+你可以指定某个包名下的页面上报，其他包名下不上报
+
+```
+pathConfig.addPageNameWhiteList("com.example.jumppathdemo")
+```
+
+> 特别的，如果不设置白名单，则表示所有的类都会上报
+
+**黑名单：**
+
+你也可以指定某个某个包名下的类不上报：
+
+```
+pathConfig.addPageNameBlackList("com.xx.xx")
 ```
 
 ### 附：PathStatPlugin 设计类图
