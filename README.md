@@ -1,2 +1,90 @@
-# PathStatSDK
-用于统计跳转路径
+# PathStatSDK 使用文档
+
+> 用于统计用户跳转路径
+
+## 一、引入依赖
+
+在根目录的 build.gradle 中配置插件：
+
+``` groovy
+
+buildscript {
+    dependencies {
+        classpath "com.yuewen.cooperate.pathstat:pathstatplugin:$new_version"
+    } 
+}
+```
+
+子模块 build.gradle 中配置：
+
+``` groovy
+//pathStat 插件
+apply plugin: 'path-stat-plugin'
+pathStatPlugin.isDebug = true
+
+dependencies {
+    implementation 'com.yuewen.cooperate.pathstat:pathstatsdk:$new_version'
+}
+```
+
+## 二、Application 初始化
+
+在 Application 的 onCreate 入口中初始化 PathStatSDK：
+
+``` kotlin
+val pathConfig = PathStatConfig(this) { pathStatInfo ->
+    Toast.makeText( this,
+        "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${pathStatInfo.sessionId}",Toast.LENGTH_SHORT
+    ).show()
+}
+PathStatSDK.get().init(pathConfig)
+```
+
+> 需要使用方自己实现 statListener 接口，以自己工程的埋点上报方式完成上报！
+
+## 三、特殊场景上报
+
+1. 自定义 pn
+
+``` kotlin
+class A : AppCompatActivity(), IGetPathStatInfo{
+    //...
+    override fun getPathStatInfo(): PathStatInfo {
+        return PathStatInfo("A")
+    }
+}
+```
+
+2. 屏蔽当前页面上报
+
+目前有两种方式：
+
+第一种：当前 Activity/Fragment 实现 IGetPathStatInfo 接口，传入 needStat=false
+
+``` kotlin
+class ViewPagerActivity : FragmentActivity(), IGetPathStatInfo {
+    override fun getPathStatInfo(): PathStatInfo {
+        return PathStatInfo(false)
+    }
+}
+```
+
+第二种：初始化时调用 PathStatConfig 时调用 addAvoidClassName 方法，传入需要屏蔽的类：
+
+``` kotlin
+val pathConfig = PathStatConfig(this){
+    //...
+}
+pathConfig.addAvoidClassName("com.xx.xx.Fragment")
+PathStatSDK.get().init(pathConfig)
+```
+
+> 【注】有些非自定义的类只能采用第二种方式实现，例如第三方库中的一些 Fragment；另外，如果使用第二种方式需要注意 **避免混淆**！
+
+3. 手动上报
+
+针对某些特殊场景，提供手动上报方式，调用 statPathInfo 即可：
+
+``` kotlin
+PathStatSDK.get().statPathInfo(PathStatInfo("手动上报"))
+```
