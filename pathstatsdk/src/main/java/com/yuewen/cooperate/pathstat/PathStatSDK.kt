@@ -172,14 +172,14 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             return
         }
         if (isVisibleToUser) {
-            val alreadyStat = statPathInfo(analyseStatPathInfo(fragment))
+            statPathInfo(analyseStatPathInfo(fragment))
             //通知 onStart 已被 setUserVisibleHint 托管
             var arguments = fragment.arguments
             if (arguments === null) {
                 arguments = Bundle()
                 fragment.arguments = arguments
             }
-            arguments.putBoolean(fragmentAlreadyStat, alreadyStat)
+            arguments.putBoolean(fragmentAlreadyStat, true)
         }
     }
     // Fragment 生命周期回调 end
@@ -246,28 +246,35 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      * 上报 PathInfo
      * 外部可手动调用，强制上报，针对一些非 Activity 切换场景
      */
-    public fun statPathInfo(pathStatInfo: PathStatInfo): Boolean {
-        if (serviceConnected.not()) {
-            Log.e(TAG, "Service 未连接，正常不应该出现该场景！")
-            return false
+    public fun statPathInfo(pathStatInfo: PathStatInfo) {
+        if (!serviceConnected) {
+            Log.e(TAG, "Service 未连接，可能由于手动上报导致, pathStatInfo.pn: ${pathStatInfo.pn}")
+            serviceConnectListenerList.add(object : ServiceConnectListener {
+                override fun onConnected() {
+                    statPathInfo(pathStatInfo)
+                    serviceConnectListenerList.remove(this)
+                }
+
+            })
+            return
         }
         if (pageState == null) {
             Log.e(TAG, "pathStatSDKState 为空，正常不应该出现该场景！")
-            return false
+            return
         }
         if (pathStatInfo.needStat.not()) {
             //无需上报
-            return false
+            return
         }
         // className 可能为空，手动上报！！
         if (pathStatInfo.className.isNotEmpty()) {
             //如果该类名在黑名单内，不上报
             if (config.containsPackageBlackList(pathStatInfo.className)) {
-                return false
+                return
             }
             //如果该类名不在白名单内，不上报
             if (!config.containsPackageWhiteList(pathStatInfo.className)) {
-                return false
+                return
             }
         }
 
@@ -277,6 +284,5 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
         pathStatInfo.sessionId = pageState!!.sessionId
         Log.d(TAG, "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${pathStatInfo.sessionId}")
         config.statListener(pathStatInfo)
-        return true
     }
 }
