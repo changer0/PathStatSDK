@@ -1,13 +1,13 @@
-package com.yuewen.cooperate.pathstat.asm.hockclasses;
+package com.yuewen.cooperate.pathstat.asm.hookclasses;
 
 import org.objectweb.asm.MethodVisitor;
 
 /**
  * Created by zhanglulu on 2020/4/18.
- * for Hock 基方法
+ * for Hook 基方法
  */
-public abstract class HockMethod {
-    public HockMethod(String name, String desc) {
+public abstract class HookMethod {
+    public HookMethod(String name, String desc) {
         this.name = name;
         this.desc = desc;
     }

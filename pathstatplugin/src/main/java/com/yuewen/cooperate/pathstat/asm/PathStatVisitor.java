@@ -1,8 +1,8 @@
 package com.yuewen.cooperate.pathstat.asm;
 
-import com.yuewen.cooperate.pathstat.asm.hockclasses.HockClass;
-import com.yuewen.cooperate.pathstat.asm.hockclasses.HockClassManger;
-import com.yuewen.cooperate.pathstat.asm.hockclasses.HockMethod;
+import com.yuewen.cooperate.pathstat.asm.hookclasses.HookClass;
+import com.yuewen.cooperate.pathstat.asm.hookclasses.HookClassManger;
+import com.yuewen.cooperate.pathstat.asm.hookclasses.HookMethod;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -19,7 +19,7 @@ class PathStatVisitor extends ClassVisitor {
     private String[] mInterfaces;
     private String superName;
     @Nullable
-    private HockClass mHockClass;
+    private HookClass mHookClass;
 
     PathStatVisitor() {
         super(Opcodes.ASM4);
@@ -33,14 +33,14 @@ class PathStatVisitor extends ClassVisitor {
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         mClassName = name;
         mInterfaces = interfaces;
-        mHockClass = HockClassManger.matchingClass(name);
+        mHookClass = HookClassManger.matchingClass(name);
         this.superName = superName;
-        if (mHockClass != null) {
+        if (mHookClass != null) {
             System.out.println("---------开始遍历类 Start---------");
         } else {
             //被过滤掉的类
         }
-        if (HockClassManger.isDebug.equals("true")) {
+        if (HookClassManger.isDebug.equals("true")) {
             System.out.println("className: " + name);
         }
         super.visit(version, access, name, signature, superName, interfaces);
@@ -59,13 +59,13 @@ class PathStatVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor methodVisitor = cv.visitMethod(access, name, desc, signature, exceptions);
         MethodVisitor adapter = null;
-        if (HockClassManger.isDebug.equals("true")) {
-            System.out.println("Method name：" + name + " desc: " + desc + " mHockClass: " + mHockClass);
+        if (HookClassManger.isDebug.equals("true")) {
+            System.out.println("Method name：" + name + " desc: " + desc + " mHookClass: " + mHookClass);
         }
-        HockMethod hockMethod = HockClassManger.matchingMethod(mHockClass, name, desc);
-        if (hockMethod != null) {
+        HookMethod hookMethod = HookClassManger.matchingMethod(mHookClass, name, desc);
+        if (hookMethod != null) {
             try {
-                adapter = hockMethod.insertMethod(mInterfaces, mClassName, superName, methodVisitor, access, name, desc);
+                adapter = hookMethod.insertMethod(mInterfaces, mClassName, superName, methodVisitor, access, name, desc);
             } catch (Exception e) {
                 e.printStackTrace();
                 adapter = null;
@@ -82,7 +82,7 @@ class PathStatVisitor extends ClassVisitor {
 
     @Override
     public void visitEnd() {
-        if (mHockClass != null) {
+        if (mHookClass != null) {
             System.out.println("---------开始遍历类 End--------");
         }
         super.visitEnd();

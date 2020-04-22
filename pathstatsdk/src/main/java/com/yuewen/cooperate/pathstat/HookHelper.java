@@ -17,17 +17,17 @@ import kotlin.jvm.functions.Function1;
 
 /**
  * Created by zhanglulu on 2020/4/17.
- * for Hock ViewPager 的 setAdapter 方法
+ * for Hook ViewPager 的 setAdapter 方法
  */
-public class HockHelper {
-    private static final String TAG = "HockHelper";
+public class HookHelper {
+    private static final String TAG = "HookHelper";
 
     /**
-     * Hock ViewPager 的 setAdapter
+     * Hook ViewPager 的 setAdapter
      * @param viewPagerObj
      */
-    public static void hockViewPagerSetAdapter(Object viewPagerObj) {
-        Log.d(TAG, "成功 Hock ViewPager setAdapter：" + viewPagerObj);
+    public static void hookViewPagerSetAdapter(Object viewPagerObj) {
+        Log.d(TAG, "成功 Hook ViewPager setAdapter：" + viewPagerObj);
 // TODO: p_zlulzhang 2020/4/18 这个监听现在已没有意义，保留代码
 
 //        if (viewPagerObj instanceof ViewPager) {
@@ -76,53 +76,53 @@ public class HockHelper {
     }
 
     //----------------------------------------------------------------------------------------------
-    // Hock Fragment
+    // Hook Fragment
 
     /**
-     * hock Fragment 的 setUserVisibleHint
+     * hook Fragment 的 setUserVisibleHint
      * @param fragment
      * @param isVisibleToUser
      */
-    public static void hockFragmentSetUserVisibleHint(Fragment fragment, boolean isVisibleToUser) {
-        Log.d(TAG, "成功 Hock Fragment setUserVisibleHint：isVisibleToUser：" + isVisibleToUser);
+    public static void hookFragmentSetUserVisibleHint(Fragment fragment, boolean isVisibleToUser) {
+        Log.d(TAG, "成功 Hook Fragment setUserVisibleHint：isVisibleToUser：" + isVisibleToUser);
         PathStatSDK.get().onFragmentSetUserVisibleHint(fragment, isVisibleToUser);
     }
     /**
-     * Hock Fragment 的 onCreate 方法
+     * Hook Fragment 的 onCreate 方法
      * @param fragment
      */
-    public static void hockFragmentOnCreate(Fragment fragment) {
-        Log.d(TAG, "成功 Hock Fragment onCreate：" + fragment);
+    public static void hookFragmentOnCreate(Fragment fragment) {
+        Log.d(TAG, "成功 Hook Fragment onCreate：" + fragment);
         PathStatSDK.get().onFragmentCreate(fragment);
     }
 
     /**
-     * Hock Fragment 的 onStart 方法
+     * Hook Fragment 的 onStart 方法
      * @param fragment
      */
-    public static void hockFragmentOnStart(Fragment fragment) {
-        Log.d(TAG, "成功 Hock Fragment onStart：" + fragment);
+    public static void hookFragmentOnStart(Fragment fragment) {
+        Log.d(TAG, "成功 Hook Fragment onStart：" + fragment);
         PathStatSDK.get().onFragmentStart(fragment);
     }
 
     /**
-     * Hock Fragment 的 onStart 方法
+     * Hook Fragment 的 onStart 方法
      * @param fragment
      */
-    public static void hockFragmentOnStop(Fragment fragment) {
-        Log.d(TAG, "成功 Hock Fragment onStop：" + fragment);
+    public static void hookFragmentOnStop(Fragment fragment) {
+        Log.d(TAG, "成功 Hook Fragment onStop：" + fragment);
         PathStatSDK.get().onFragmentStop(fragment);
     }
 
     /**
-     * Hock Fragment 的 onDestroy 方法
+     * Hook Fragment 的 onDestroy 方法
      * @param fragment
      */
-    public static void hockFragmentOnDestroy(Fragment fragment) {
-        Log.d(TAG, "成功 Hock Fragment OnDestroy：" + fragment);
+    public static void hookFragmentOnDestroy(Fragment fragment) {
+        Log.d(TAG, "成功 Hook Fragment OnDestroy：" + fragment);
         PathStatSDK.get().onFragmentDestroy(fragment);
     }
-    // Hock Fragment end
+    // Hook Fragment end
     //----------------------------------------------------------------------------------------------
 
 }

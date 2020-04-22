@@ -10,7 +10,7 @@ import com.android.build.api.transform.TransformException
 import com.android.build.api.transform.TransformInput
 import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.internal.pipeline.TransformManager
-import com.yuewen.cooperate.pathstat.asm.hockclasses.HockClassManger
+import com.yuewen.cooperate.pathstat.asm.hookclasses.HookClassManger
 import com.yuewen.cooperate.pathstat.asm.PathStatModify
 import com.yuewen.cooperate.pathstat.utils.TextUtil
 import groovy.io.FileType
@@ -62,10 +62,10 @@ class PathStatTransform extends Transform {
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         this.transform(transformInvocation.getContext(), transformInvocation.getInputs(), transformInvocation.getReferencedInputs(), transformInvocation.getOutputProvider(), transformInvocation.isIncremental())
-        HockClassManger.customViewPagerClass = "${mProject.extensions.getByType(PathExtensions).getCustomViewPagerClass()}"
-        HockClassManger.isDebug = "${mProject.extensions.getByType(PathExtensions).getIsDebug()}"
-        println "customViewPagerClass：${HockClassManger.customViewPagerClass}"
-        println "idDebug：${HockClassManger.isDebug}"
+        HookClassManger.customViewPagerClass = "${mProject.extensions.getByType(PathExtensions).getCustomViewPagerClass()}"
+        HookClassManger.isDebug = "${mProject.extensions.getByType(PathExtensions).getIsDebug()}"
+        println "customViewPagerClass：${HookClassManger.customViewPagerClass}"
+        println "idDebug：${HookClassManger.isDebug}"
 
         Logger.info("||=================================================||")
         Logger.info("||                    开始计时                      ||")
@@ -84,7 +84,7 @@ class PathStatTransform extends Transform {
                         }
                         /** 获得输出文件*/
                         File dest = transformInvocation.getOutputProvider().getContentLocation(destName + "_" + hexName, jarInput.contentTypes, jarInput.scopes, Format.JAR)
-                        if (HockClassManger.isDebug == "true"){
+                        if (HookClassManger.isDebug == "true"){
                             Logger.info("开始遍历特定jar: ${dest.absolutePath}")
                         }
                         def modifiedJar = modifyJarFile(jarInput.file, transformInvocation.context.getTemporaryDir())

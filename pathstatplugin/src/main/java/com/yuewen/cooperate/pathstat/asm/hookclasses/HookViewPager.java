@@ -1,4 +1,4 @@
-package com.yuewen.cooperate.pathstat.asm.hockclasses;
+package com.yuewen.cooperate.pathstat.asm.hookclasses;
 
 import com.yuewen.cooperate.pathstat.asm.PushStatMethodVisitor;
 
@@ -7,23 +7,23 @@ import org.objectweb.asm.MethodVisitor;
 
 /**
  * Created by zhanglulu on 2020/4/18.
- * for 注意这个 Hock 类可以传入两个构造方法，包含自定义的 ViewPager
+ * for 注意这个 Hook 类可以传入两个构造方法，包含自定义的 ViewPager
  */
-public class HockViewPager extends HockClass {
+public class HookViewPager extends HookClass {
 
-    public HockViewPager() {
+    public HookViewPager() {
         super("androidx/viewpager/widget/ViewPager");
-        methodNameList.add(new HockSetAdapter());
+        methodNameList.add(new HookSetAdapter());
     }
 
-    public HockViewPager(String className) {
+    public HookViewPager(String className) {
         super(className);
-        methodNameList.add(new HockSetAdapter());
+        methodNameList.add(new HookSetAdapter());
     }
 
-    public class HockSetAdapter extends HockMethod {
+    public class HookSetAdapter extends HookMethod {
 
-        public HockSetAdapter() {
+        public HookSetAdapter() {
             super("setAdapter", "(Landroidx/viewpager/widget/PagerAdapter;)V");
         }
 
@@ -37,8 +37,8 @@ public class HockViewPager extends HockClass {
                     methodVisitor.visitVarInsn(ALOAD, 0);
                     // INVOKESTATIC INVOKESTATIC
                     methodVisitor.visitMethodInsn(INVOKESTATIC,
-                            "com/yuewen/cooperate/pathstat/HockHelper",
-                            "hockViewPagerSetAdapter",
+                            "com/yuewen/cooperate/pathstat/HookHelper",
+                            "hookViewPagerSetAdapter",
                             "(Ljava/lang/Object;)V", false);
                     System.out.println("已插入 " + className + " " + methodName);
                 }

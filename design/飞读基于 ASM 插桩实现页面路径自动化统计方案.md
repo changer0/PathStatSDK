@@ -102,7 +102,7 @@ private fun isViewPageFragment(view: View?):Boolean {
 
 通过观察嵌套在 ViewPager Fragment 的方法发现，Fragment 的 setUserVisibleHint 方法会在 ViewPager 切换时调用且只有在显示时设置的参数值为 true。
 
-基于此，我们可以采用目前流行的**面向切向编程**(AOP)方式来实现，通过 Hock 系统代码并进行插桩。
+基于此，我们可以采用目前流行的**面向切向编程**(AOP)方式来实现，通过 Hook 系统代码并进行插桩。
 
 ### 代码插桩
 

@@ -1,4 +1,4 @@
-package com.yuewen.cooperate.pathstat.asm.hockclasses;
+package com.yuewen.cooperate.pathstat.asm.hookclasses;
 
 import com.yuewen.cooperate.pathstat.asm.PushStatMethodVisitor;
 
@@ -8,23 +8,23 @@ import org.objectweb.asm.MethodVisitor;
  * Created by zhanglulu on 2020/4/18.
  * for
  */
-public class HockFragment extends HockClass {
+public class HookFragment extends HookClass {
 
-    public HockFragment() {
+    public HookFragment() {
         super("androidx/fragment/app/Fragment");
-        methodNameList.add(new HockOnCreate());
-        methodNameList.add(new HockOnOnStart());
-        methodNameList.add(new HockOnOnStop());
-        methodNameList.add(new HockOnDestroy());
-        methodNameList.add(new HockSetUserVisibleHint());
+        methodNameList.add(new HookOnCreate());
+        methodNameList.add(new HookOnOnStart());
+        methodNameList.add(new HookOnOnStop());
+        methodNameList.add(new HookOnDestroy());
+        methodNameList.add(new HookSetUserVisibleHint());
     }
     
     //----------------------------------------------------------------------------------------------
-    // Hock 方法
+    // Hook 方法
 
-    private class HockOnCreate extends HockMethod {
+    private class HookOnCreate extends HookMethod {
 
-        public HockOnCreate() {
+        public HookOnCreate() {
             super("onCreate", "(Landroid/os/Bundle;)V");
         }
 
@@ -38,8 +38,8 @@ public class HockFragment extends HockClass {
                     methodVisitor.visitVarInsn(ALOAD, 0);
                     // INVOKESTATIC INVOKESTATIC
                     methodVisitor.visitMethodInsn(INVOKESTATIC,
-                            "com/yuewen/cooperate/pathstat/HockHelper",
-                            "hockFragmentOnCreate",
+                            "com/yuewen/cooperate/pathstat/HookHelper",
+                            "hookFragmentOnCreate",
                             "(Landroidx/fragment/app/Fragment;)V", false);
                     System.out.println("已插入 " + className + " " + methodName);
                 }
@@ -47,9 +47,9 @@ public class HockFragment extends HockClass {
         }
     }
 
-    private class HockOnOnStart extends HockMethod {
+    private class HookOnOnStart extends HookMethod {
 
-        public HockOnOnStart() {
+        public HookOnOnStart() {
             super("onStart", "()V");
         }
 
@@ -63,8 +63,8 @@ public class HockFragment extends HockClass {
                     methodVisitor.visitVarInsn(ALOAD, 0);
                     // INVOKESTATIC INVOKESTATIC
                     methodVisitor.visitMethodInsn(INVOKESTATIC,
-                            "com/yuewen/cooperate/pathstat/HockHelper",
-                            "hockFragmentOnStart",
+                            "com/yuewen/cooperate/pathstat/HookHelper",
+                            "hookFragmentOnStart",
                             "(Landroidx/fragment/app/Fragment;)V", false);
                     System.out.println("已插入 " + className + " " + methodName);
                 }
@@ -72,9 +72,9 @@ public class HockFragment extends HockClass {
         }
     }
 
-    private class HockOnOnStop extends HockMethod {
+    private class HookOnOnStop extends HookMethod {
 
-        public HockOnOnStop() {
+        public HookOnOnStop() {
             super("onStop", "()V");
         }
 
@@ -88,8 +88,8 @@ public class HockFragment extends HockClass {
                     methodVisitor.visitVarInsn(ALOAD, 0);
                     // INVOKESTATIC INVOKESTATIC
                     methodVisitor.visitMethodInsn(INVOKESTATIC,
-                            "com/yuewen/cooperate/pathstat/HockHelper",
-                            "hockFragmentOnStop",
+                            "com/yuewen/cooperate/pathstat/HookHelper",
+                            "hookFragmentOnStop",
                             "(Landroidx/fragment/app/Fragment;)V", false);
                     System.out.println("已插入 " + className + " " + methodName);
                 }
@@ -97,9 +97,9 @@ public class HockFragment extends HockClass {
         }
     }
 
-    private class HockOnDestroy extends HockMethod {
+    private class HookOnDestroy extends HookMethod {
 
-        public HockOnDestroy() {
+        public HookOnDestroy() {
             super("onDestroy", "()V");
         }
 
@@ -113,8 +113,8 @@ public class HockFragment extends HockClass {
                     methodVisitor.visitVarInsn(ALOAD, 0);
                     // INVOKESTATIC INVOKESTATIC
                     methodVisitor.visitMethodInsn(INVOKESTATIC,
-                            "com/yuewen/cooperate/pathstat/HockHelper",
-                            "hockFragmentOnDestroy",
+                            "com/yuewen/cooperate/pathstat/HookHelper",
+                            "hookFragmentOnDestroy",
                             "(Landroidx/fragment/app/Fragment;)V", false);
                     System.out.println("已插入 " + className + " " + methodName);
                 }
@@ -122,9 +122,9 @@ public class HockFragment extends HockClass {
         }
     }
 
-    private class HockSetUserVisibleHint extends HockMethod {
+    private class HookSetUserVisibleHint extends HookMethod {
 
-        public HockSetUserVisibleHint() {
+        public HookSetUserVisibleHint() {
             super("setUserVisibleHint", "(Z)V");
         }
 
@@ -140,8 +140,8 @@ public class HockFragment extends HockClass {
                     methodVisitor.visitVarInsn(ILOAD, 1);
                     // INVOKESTATIC INVOKESTATIC
                     methodVisitor.visitMethodInsn(INVOKESTATIC,
-                            "com/yuewen/cooperate/pathstat/HockHelper",
-                            "hockFragmentSetUserVisibleHint",
+                            "com/yuewen/cooperate/pathstat/HookHelper",
+                            "hookFragmentSetUserVisibleHint",
                             "(Landroidx/fragment/app/Fragment;Z)V", false);
                     System.out.println("已插入 " + className + " " + methodName);
                 }
@@ -149,7 +149,7 @@ public class HockFragment extends HockClass {
         }
     }
 
-    // Hock 方法 end
+    // Hook 方法 end
     //----------------------------------------------------------------------------------------------
 
 }
