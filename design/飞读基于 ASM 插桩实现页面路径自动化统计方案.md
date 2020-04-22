@@ -14,82 +14,6 @@
 
 ![流程设计](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200416150000.png)
 
-## PathStatSDK 实现方案
-
-## 旧版方案
-
-**Activity 跳转**
-
-借助 Application 的 registerActivityLifecycleCallbacks 方法，监听所有 Activity 的生命周期方法，下面是两个页面跳转时生命周期的回调方法：
-
-A 页面跳转 B 页面
-
-![A->B](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200416150117.png)
-
-B 页面返回 A 页面
-
-![B->A](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200416150129.png)
-
-通过上面的 Activity 的生命周期的流程，我们可以在当前页面的 onStart 时进行进行全局的监听，实现 Activity 的跳转路径的统计。
-
-**Fragment 页面**
-
-对于 Fragment 页面，可以参考 Activity 的方式，监听 Fragment 的 onStart 方法，但是当我们使用 ViewPager 加载 Fragment 时，由于 ViewPager 的预加载功能，会提前执行 Fragment 的生命周期方法：
-
-![ViewPager 预加载](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200416152533.png)
-
-为此我们可以直接继承 ViewPager，实现一个我们可以控制的 PathStatViewPager，通过监听 OnPageChangeListener 实现上报。
-
-**手动上报**
-
-即便是解决了 Activity 和 Fragment 的曝光问题，但是针对一些特殊页面，例如：阅读尾页和搜索结果页，在 Android 中都是通过 View 实现的，而数据侧则会理解为一个独立的页面，所以也会暴露一个手动上报的方法。
-
-> 特别的，针对 **H5** 页面的上报，可以通过实现 JS 接口调用手动上报即可
-
-![搜索结果页](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200416152755.png)
-
-
-### 类图设计
-
-![类图](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200416155120.png)
-
-### 特殊场景
-
-问题1：当 ViewPager 嵌套 Fragment 时，使用 PathStatViewPager 与 onStart 生命周期重复上报问题。
-
-解决：
-
-为了避免这种场景的重复上报，PathStatSDK.kt 中会通过递归查找当前 ViewPager 是否使用是的我们的专用于上报的 ViewPager。
-
-```
-private fun isViewPageFragment(view: View?):Boolean {
-    if (view == null) {
-        return false
-    }
-    if (view is PathStatViewPager) {
-        return true
-    }
-    if (view.parent !is View) {
-        return false
-    }
-    return isViewPageFragment(view.parent as View)
-
-}
-```
-
-问题2：当 ViewPager 嵌套 Fragment 时，外层嵌套的 Activity/Fragment 重复上报问题。
-
-解决：
-
-可以让该 Activity/Fragment 实现 IGetPathStatInfo 接口，并传入 needStat = false。
-
-问题3：当用户点击 Home 键时，为了防止当前页面的 Activity/Fragment 的 onStart 方法上报，需要记录一个当前的 Activity/Fragment 变量，由于 PathStatSDK 是单例所以就会引起泄漏。
-
-解决：
-
-记录 Activity/Fragment 的数量，当数量为 0 时，当前变量指向 null。
-
-
 ## 基于 ASM 插桩实现方案
 
 ### 旧版方案存在的问题
@@ -110,7 +34,7 @@ private fun isViewPageFragment(view: View?):Boolean {
 
 为了实现代码插桩，我们需要自定义一个插件，并创建一个自定义的 Transform 类，用来读取打包生成的 class 文件。
 
-![](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200419105223.png)
+![Transform](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200419105223.png)
 
 > 每个 Transform 其实都是一个 Gradle 的 Task ， Android 编译器中的 TaskManager 会将每个 Transform 串联起来。第一个 Transform 接收来自 javac 编译的结果，以及拉取到本地的第三方依赖和 resource 资源。这些编译的中间产物在 Transform 链上流动，每个 Transform 节点都可以对 class 进行处理再传递到下一个 Transform 。我们自定义的 Transform 会插入到链的最前面。
 
@@ -118,24 +42,34 @@ private fun isViewPageFragment(view: View?):Boolean {
 
 实现流程：
 
-![](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200419113731.png)
+![实现流程](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200422102512.png)
 
 
 具体需要插桩的方法：
 
 为了监听 Fragment 的生命周期方法，需要在 Fragment 类的生命周期方法后插入一段代码，用于监听 Fragment 的声明周期：
 
-![](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200419195251.png)
+![](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200422102603.png)
 
 另外，也需要监听它的 setUserVisibleHint 方法的回调，实现 ViewPager 嵌套 Fragment 的曝光监听：
 
-![](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200418223539.png)
+![](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200422102635.png)
 
 通过这样的方案就可以解决 ViewPager 嵌套 Fragment 的这种情况的曝光，以及像飞读主页面中 Tab 切换的曝光（都回调 setUserVisibleHint 方法）。
 
+### 跨进程支持
+
+PathStatSDK 一开始时持有上报序号 order，以及会话 sessionId，但是如果对于跨进程的页面，order 和 sessionId 会在每个进程各维护一个；
+
+为了解决跨进程问题，通过 AIDL 实现一个 PageState.aidl，用来跨进程获取 sessionId 和 order 等页面状态信息。
+
+在 PathStatSDK 初始化时绑定一个 PageStateService，用于保存这些信息，后续页面数据状态的变更全部通过该服务。
+
+> 其中 sessionId 只允许在主进程创建一个，用于保证全局唯一。
+
 ### 类图
 
-![](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200418225109.png)
+![类图](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200422145402.png)
 
 > 插桩过程较为复杂 ~ ^ ~，后面专门为它做次分享！
 
@@ -151,11 +85,17 @@ private fun isViewPageFragment(view: View?):Boolean {
 
 ```
 public fun onFragmentStart(fragment: Fragment?) {
-    if (fragment === null) {
+    if (!serviceConnected) {
+        serviceConnectListenerList.add(object : ServiceConnectListener {
+            override fun onConnected() {
+                onFragmentStart(fragment)
+                serviceConnectListenerList.remove(this)
+            }
+        })
         return
     }
-    if (curFragment === fragment) {
-        return//相同 Fragment
+    if (fragment === null) {
+        return
     }
     if (!fragment.userVisibleHint) {
         return//非显示状态
@@ -166,7 +106,6 @@ public fun onFragmentStart(fragment: Fragment?) {
         return
     }
     statPathInfo(analyseStatPathInfo(fragment))
-    curFragment = fragment
 }
 ```
 
@@ -183,15 +122,24 @@ public fun onFragmentStop(fragment: Fragment?) {
  * ViewPager 嵌套 Fragment 曝光
  */
 public fun onFragmentSetUserVisibleHint(fragment: Fragment, isVisibleToUser: Boolean) {
+    if (!serviceConnected) {
+        serviceConnectListenerList.add(object : ServiceConnectListener {
+            override fun onConnected() {
+                onFragmentSetUserVisibleHint(fragment, isVisibleToUser)
+                serviceConnectListenerList.remove(this)
+            }
+        })
+        return
+    }
     if (isVisibleToUser) {
-        val alreadyStat = statPathInfo(analyseStatPathInfo(fragment))
+        statPathInfo(analyseStatPathInfo(fragment))
         //通知 onStart 已被 setUserVisibleHint 托管
         var arguments = fragment.arguments
         if (arguments === null) {
             arguments = Bundle()
             fragment.arguments = arguments
         }
-        arguments.putBoolean(fragmentAlreadyStat, alreadyStat)
+        arguments.putBoolean(fragmentAlreadyStat, true)
     }
 }
 ```
@@ -226,8 +174,8 @@ pathConfig.addPageNameBlackList("com.xx.xx")
 
 ### 附：PathStatPlugin 设计类图
 
-![](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200420120447.png)
+![](https://gitee.com/luluzhang/ImageCDN/raw/master/blog/20200422092950.png)
 
 ## Demo 地址
 
-http://gitlab.inner.yuewen.local/zhanglulu/PathStatSDKDem
+http://gitlab.inner.yuewen.local/zhanglulu/PathStatSDKDemo
