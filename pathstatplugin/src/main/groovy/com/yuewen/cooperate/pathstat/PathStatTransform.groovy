@@ -62,9 +62,7 @@ class PathStatTransform extends Transform {
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         this.transform(transformInvocation.getContext(), transformInvocation.getInputs(), transformInvocation.getReferencedInputs(), transformInvocation.getOutputProvider(), transformInvocation.isIncremental())
-        HookClassManger.customViewPagerClass = "${mProject.extensions.getByType(PathExtensions).getCustomViewPagerClass()}"
-        HookClassManger.isDebug = "${mProject.extensions.getByType(PathExtensions).getIsDebug()}"
-        println "customViewPagerClass：${HookClassManger.customViewPagerClass}"
+        HookClassManger.isDebug = mProject.extensions.getByType(PathExtensions).getIsDebug()
         println "idDebug：${HookClassManger.isDebug}"
 
         Logger.info("||=================================================||")

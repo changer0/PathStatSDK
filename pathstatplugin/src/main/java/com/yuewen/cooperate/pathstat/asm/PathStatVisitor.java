@@ -40,7 +40,7 @@ class PathStatVisitor extends ClassVisitor {
         } else {
             //被过滤掉的类
         }
-        if (HookClassManger.isDebug.equals("true")) {
+        if (HookClassManger.isDebug) {
             System.out.println("className: " + name);
         }
         super.visit(version, access, name, signature, superName, interfaces);
@@ -59,7 +59,7 @@ class PathStatVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor methodVisitor = cv.visitMethod(access, name, desc, signature, exceptions);
         MethodVisitor adapter = null;
-        if (HookClassManger.isDebug.equals("true")) {
+        if (HookClassManger.isDebug) {
             System.out.println("Method name：" + name + " desc: " + desc + " mHookClass: " + mHookClass);
         }
         HookMethod hookMethod = HookClassManger.matchingMethod(mHookClass, name, desc);

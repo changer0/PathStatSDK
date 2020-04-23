@@ -225,6 +225,7 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
         val pathStatInfo = if (target is IGetPathStatInfo) {
             target.getPathStatInfo()
         } else {
+            Log.w(TAG, "注意：${target.javaClass.name} 未实现 IGetPathStatInfo 接口，将使用类名进行上报！")
             //统计信息未设置，使用默认的 Fragment 类名
             PathStatInfo(target.javaClass.name)
         }

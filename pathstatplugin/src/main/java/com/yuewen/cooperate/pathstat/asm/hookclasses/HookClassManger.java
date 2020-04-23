@@ -10,31 +10,7 @@ import javax.annotation.Nullable;
  * for
  */
 public class HookClassManger {
-    public static String isDebug = "false";
-
-    //----------------------------------------------------------------------------------------------
-    // 自定义 Hook 的类
-    public static String customViewPagerClass;
-    private static boolean isMatchingCustomClass(String className) {
-        //用户自定义的 ViewPager
-        if (customViewPagerClass == null || customViewPagerClass.length() < 3) {
-            return false;
-        }
-        String temStr = customViewPagerClass.substring(1, customViewPagerClass.length() - 1);
-        String[] classesArray = temStr.split(",");
-        if (classesArray.length > 0) {
-            for (String viewPagerClass : classesArray) {
-                if (viewPagerClass.equals(className)) {
-                    System.out.println("存在 customViewPagerClass: " + className);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    //  自定义 Hook 的类 end
-    //----------------------------------------------------------------------------------------------
-
+    public static boolean isDebug = false;
     /**
      * 需要 Hook 的类
      */
@@ -52,9 +28,6 @@ public class HookClassManger {
             if (className.equals(hookClass.className)) {
                 return hookClass;
             }
-        }
-        if (isMatchingCustomClass(className)) {
-            return new HookViewPager(className);
         }
         return null;
     }
