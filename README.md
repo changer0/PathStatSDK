@@ -105,3 +105,11 @@ PathStatSDK.get().statPathInfo(PathStatInfo("手动上报"))
 1、如果不自定义页面名称，将会返回当前页面对应类的包名+类名，所以如果不设置页面名称则需要要求当前页面对应的类不要混淆；
 
 2、有些 Tab 切换 Fragment 的场景，例如主页面中点击底部 Tab 切换 Fragment，则需要使用方手动调用 Fragment 的 setUserVisibleHint 方法。
+
+3、Log 过滤 Tag ：PathStatSDK
+
+4、如果出现某个页面未实现 IGetPathStatInfo 接口，日志中将会抛出下面的警告：
+
+```
+PathStatSDK: 注意：com.example.jumppathdemo.MainActivity 未实现 IGetPathStatInfo 接口，将使用类名进行上报！
+```
