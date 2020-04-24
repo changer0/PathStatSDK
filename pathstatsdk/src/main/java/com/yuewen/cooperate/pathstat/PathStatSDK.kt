@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.text.TextUtils
 import android.util.Log
 import androidx.fragment.app.Fragment
 import com.example.pathstatsdk.PageState
@@ -225,7 +226,6 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
         val pathStatInfo = if (target is IGetPathStatInfo) {
             target.getPathStatInfo()
         } else {
-            Log.w(TAG, "注意：${target.javaClass.name} 未实现 IGetPathStatInfo 接口，将使用类名进行上报！")
             //统计信息未设置，使用默认的 Fragment 类名
             PathStatInfo(target.javaClass.name)
         }
@@ -277,6 +277,10 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             if (!config.containsPackageWhiteList(pathStatInfo.className)) {
                 return
             }
+        }
+        //未实现接口警告
+        if (TextUtils.equals(pathStatInfo.className, pathStatInfo.pn)) {
+            Log.w(TAG, "注意：${pathStatInfo.className} 未实现 IGetPathStatInfo 接口，将使用类名进行上报！")
         }
 
         //上报序号增 1
