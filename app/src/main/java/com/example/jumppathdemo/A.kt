@@ -7,6 +7,7 @@ import android.util.Log
 import com.yuewen.cooperate.pathstat.IGetPathStatInfo
 import com.yuewen.cooperate.pathstat.PathStatInfo
 import com.yuewen.cooperate.pathstat.PathStatSDK
+import com.yuewen.cooperate.pathstat.ReadPathStatInfo
 import kotlinx.android.synthetic.main.activity_a.*
 
 class A : AppCompatActivity(), IGetPathStatInfo{
@@ -20,6 +21,6 @@ class A : AppCompatActivity(), IGetPathStatInfo{
     }
 
     override fun getPathStatInfo(): PathStatInfo {
-        return PathStatInfo("A")
+        return ReadPathStatInfo("A", 123)
     }
 }

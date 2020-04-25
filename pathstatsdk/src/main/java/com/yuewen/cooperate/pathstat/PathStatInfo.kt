@@ -4,7 +4,7 @@ package com.yuewen.cooperate.pathstat
  * Created by zhanglulu on 2020/4/15.
  * for 路径统计信息
  */
-class PathStatInfo(var pn: String = "") {
+open class PathStatInfo(var pn: String = "") {
 
     /**
      * 是否需要上报

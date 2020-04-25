@@ -5,11 +5,8 @@ import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.fragment.app.FragmentStatePagerAdapter
-import com.qq.reader.widget.RankBaseViewPager
 import com.qq.reader.widget.WebAdViewPager
-import com.yuewen.cooperate.pathstat.PathStatConfig
-import com.yuewen.cooperate.pathstat.PathStatSDK
+import com.yuewen.cooperate.pathstat.*
 
 /**
  * Created by zhanglulu on 2020/4/15.
@@ -32,9 +29,13 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         super.onCreate()
         registerActivityLifecycleCallbacks(this)
         val pathConfig = PathStatConfig(this) { pathStatInfo ->
+            var pid = 0
+            if (pathStatInfo is ReadPathStatInfo) {
+                pid = pathStatInfo.pid
+            }
             Toast.makeText(
-                this,
-                "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${pathStatInfo.sessionId}",
+                this@MyApp,
+                "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，pid: ${pid}, SessionId：${pathStatInfo.sessionId}",
                 Toast.LENGTH_SHORT
             ).show()
         }
