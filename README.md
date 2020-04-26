@@ -113,3 +113,12 @@ PathStatSDK.get().statPathInfo(PathStatInfo("手动上报"))
 ```
 PathStatSDK: 注意：com.example.jumppathdemo.MainActivity 未实现 IGetPathStatInfo 接口，将使用类名进行上报！
 ```
+
+
+## 五、插件版本与 SDK 版本对应关系
+
+> 前期有测试版本，不保证前期版本的对应关系
+
+SDK 版本 | 插件版本 | 备注
+---|---|--
+1.0.7|1.0.5| 初始版本
