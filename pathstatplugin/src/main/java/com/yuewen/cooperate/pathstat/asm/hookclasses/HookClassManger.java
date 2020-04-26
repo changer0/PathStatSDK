@@ -52,7 +52,9 @@ public class HookClassManger {
      * @return
      */
     public static boolean isAllClassMatchFinish() {
-        //System.out.println("curMatchClassSize：" + curMatchClassSize);
+        if (isDebug) {
+            System.out.println("curMatchClassSize：" + curMatchClassSize);
+        }
         if (curMatchClassSize <= 0) {
             return true;
         }
