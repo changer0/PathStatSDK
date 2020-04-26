@@ -1,5 +1,7 @@
 package com.yuewen.cooperate.pathstat.asm;
 
+import com.yuewen.cooperate.pathstat.asm.hookclasses.HookClassManger;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;
@@ -75,6 +77,10 @@ class PathStatModify {
      * @return
      */
     public static byte[] modifyClasses(byte[] srcByteCode) {
+        if (HookClassManger.isAllClassMatchFinish()) {
+            //为了加快编译时间，如果所有类都匹配结束了，直接返回
+            return srcByteCode;
+        }
         byte[] classBytesCode = null;
         try {
             classBytesCode = modifyClass(srcByteCode);

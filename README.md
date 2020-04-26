@@ -122,3 +122,4 @@ PathStatSDK: 注意：com.example.jumppathdemo.MainActivity 未实现 IGetPathSt
 SDK 版本 | 插件版本 | 备注
 ---|---|--
 1.0.7|1.0.5| 初始版本
+1.0.7|1.0.6| 插件优化编译速度（在如果已经匹配到对应的类了，就停止解压 jar）

@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
  */
 public class HookClassManger {
     public static boolean isDebug = false;
+    private static int curMatchClassSize;
     /**
      * 需要 Hook 的类
      */
@@ -18,6 +19,8 @@ public class HookClassManger {
     static {
         hookClassList.add(new HookViewPager());
         hookClassList.add(new HookFragment());
+
+        curMatchClassSize = hookClassList.size();
     }
 
     public static HookClass matchingClass(String className) {
@@ -26,6 +29,7 @@ public class HookClassManger {
         }
         for (HookClass hookClass : hookClassList) {
             if (className.equals(hookClass.className)) {
+                curMatchClassSize--;
                 return hookClass;
             }
         }
@@ -41,5 +45,17 @@ public class HookClassManger {
             }
         }
         return null;
+    }
+
+    /**
+     *  是否所有类都已经匹配结束，节省编译时间
+     * @return
+     */
+    public static boolean isAllClassMatchFinish() {
+        System.out.println("curMatchClassSize：" + curMatchClassSize);
+        if (curMatchClassSize <= 0) {
+            return true;
+        }
+        return false;
     }
 }
