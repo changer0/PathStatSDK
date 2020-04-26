@@ -19,8 +19,6 @@ public class HookClassManger {
     static {
         hookClassList.add(new HookViewPager());
         hookClassList.add(new HookFragment());
-
-        curMatchClassSize = hookClassList.size();
     }
 
     public static HookClass matchingClass(String className) {
@@ -47,6 +45,13 @@ public class HookClassManger {
         return null;
     }
 
+    /**
+     * 由于在增量编译时，静态值不会发生变化，需要在编译开始重新刷新
+     */
+    public static void initMatchClassSize() {
+        curMatchClassSize = hookClassList.size();
+        System.out.println("需要匹配的类的数量：curMatchClassSize：" + curMatchClassSize);
+    }
     /**
      *  是否所有类都已经匹配结束，节省编译时间
      * @return

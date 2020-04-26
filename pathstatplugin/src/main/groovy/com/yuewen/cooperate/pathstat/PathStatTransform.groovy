@@ -64,10 +64,10 @@ class PathStatTransform extends Transform {
         this.transform(transformInvocation.getContext(), transformInvocation.getInputs(), transformInvocation.getReferencedInputs(), transformInvocation.getOutputProvider(), transformInvocation.isIncremental())
         HookClassManger.isDebug = mProject.extensions.getByType(PathExtensions).getIsDebug()
         println "idDebug：${HookClassManger.isDebug}"
-
         Logger.info("||=================================================||")
         Logger.info("||                    开始计时                      ||")
         Logger.info("||=================================================||")
+        HookClassManger.initMatchClassSize()
         def startTime = System.currentTimeMillis()
         transformInvocation.getInputs().each {
             TransformInput input ->
