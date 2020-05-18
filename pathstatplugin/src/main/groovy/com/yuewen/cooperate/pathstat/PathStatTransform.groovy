@@ -82,10 +82,18 @@ class PathStatTransform extends Transform {
                         }
                         /** 获得输出文件*/
                         File dest = transformInvocation.getOutputProvider().getContentLocation(destName + "_" + hexName, jarInput.contentTypes, jarInput.scopes, Format.JAR)
-                        if (HookClassManger.isDebug == "true"){
+                        if (HookClassManger.isDebug) {
                             Logger.info("开始遍历特定jar: ${dest.absolutePath}")
                         }
-                        def modifiedJar = modifyJarFile(jarInput.file, transformInvocation.context.getTemporaryDir())
+                        def modifiedJar = null
+                        //如果已经遍历完成我们需要遍历的 class，就无需 modifyJarFile
+                        if (!HookClassManger.isAllClassMatchFinish()) {
+                            modifiedJar = modifyJarFile(jarInput.file, transformInvocation.context.getTemporaryDir())
+                        } else {
+                            if (HookClassManger.isDebug) {
+                                Logger.info("该 Jar 包忽略: ${dest.absolutePath}")
+                            }
+                        }
                         if (modifiedJar == null) {
                             modifiedJar = jarInput.file
                         }
@@ -105,12 +113,16 @@ class PathStatTransform extends Transform {
                                     //过滤掉 BuildConfig.class R 等文件
                                     if (!classFile.name.endsWith("R.class")
                                             && !classFile.name.endsWith("BuildConfig.class")
-                                            && !classFile.name.contains("R\$")) {
+                                            && !classFile.name.contains("R\$") && !HookClassManger.isAllClassMatchFinish()) {
                                         //修改 class 文件
                                         File modified = modifyClassFile(dir, classFile, transformInvocation.context.getTemporaryDir())
                                         if (modified != null) {
                                             //key为相对路径
                                             modifyMap.put(classFile.absolutePath.replace(dir.absolutePath, ""), modified)
+                                        }
+                                    } else {
+                                        if (HookClassManger.isDebug) {
+                                            Logger.info("该 class 忽略: ${classFile.name}")
                                         }
                                     }
 

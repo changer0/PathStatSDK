@@ -79,6 +79,9 @@ class PathStatModify {
     public static byte[] modifyClasses(byte[] srcByteCode) {
         if (HookClassManger.isAllClassMatchFinish()) {
             //为了加快编译时间，如果所有类都匹配结束了，直接返回
+            if (HookClassManger.isDebug) {
+                System.out.println("modifyClasses: 已匹配完成，无需要继续执行");
+            }
             return srcByteCode;
         }
         byte[] classBytesCode = null;
