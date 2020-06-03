@@ -42,6 +42,14 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      * 页面状态数据
      */
     private var pageState: PageState? = null
+    get() {
+        if (field!!.asBinder().isBinderAlive) {
+            return field
+        }
+        //服务失联，启动服务
+        bindService(config.application)
+        return null
+    }
 
     /**
      * 没有连接时的 行为
