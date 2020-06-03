@@ -176,11 +176,12 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             statPathInfo(analyseStatPathInfo(fragment))
             //通知 onStart 已被 setUserVisibleHint 托管
             var arguments = fragment.arguments
-            if (arguments === null) {
+            //fix Fragment already active and state has been saved
+            if (arguments === null && !fragment.isStateSaved) {
                 arguments = Bundle()
                 fragment.arguments = arguments
             }
-            arguments.putBoolean(fragmentAlreadyStat, true)
+            arguments?.putBoolean(fragmentAlreadyStat, true)
         }
     }
     // Fragment 生命周期回调 end
