@@ -128,3 +128,4 @@ SDK 版本 | 插件版本 | 备注
 1.0.7|1.0.9| 大幅度优化插件编译速度（飞读项目 70s -> 20s）
 1.0.8|1.0.9| fix Fragment already active and state has been saved
 1.0.9|1.0.9| fix android.os.DeadObjectException
+1.0.10|1.0.9| fix NullPointer
