@@ -120,8 +120,8 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             val activityNum = it.activityNum-1
             it.activityNum = activityNum
             Log.d(TAG, "onActivityDestroyed, activityNum: $activityNum")
-            if (activityNum == 0) {
-                release()//当 Activity 不存在时，释放
+            if (activityNum <= 0) {
+                release()//当 Activity 不存在时，释放(< 0 为异常场景)
             }
         }
     }
@@ -209,7 +209,9 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             pageState = PageState.Stub.asInterface(service)
             if (Utils.isMainProcess(config.application)) {
-                pageState!!.sessionId = UUID.randomUUID().toString()
+                pageState?.let {
+                    it.sessionId = UUID.randomUUID().toString()
+                }
             }
             serviceConnected = true
             val tempListener = ArrayList<ServiceConnectListener>(serviceConnectListenerList)
@@ -298,11 +300,13 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             Log.w(TAG, "注意：${pathStatInfo.className} 未实现 IGetPathStatInfo 接口，将使用类名进行上报！")
         }
 
-        //上报序号增 1 pageState 上面已判空
-        pathStatInfo.curOrder =  pageState!!.order+1
-        pageState!!.order = pathStatInfo.curOrder
-        pathStatInfo.sessionId = pageState!!.sessionId
-        Log.d(TAG, "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${pathStatInfo.sessionId}")
-        config.statListener(pathStatInfo)
+        //上报序号增 1
+        pageState?.let {
+            pathStatInfo.curOrder =  it.order+1
+            it.order = pathStatInfo.curOrder
+            pathStatInfo.sessionId = it.sessionId
+            Log.d(TAG, "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${pathStatInfo.sessionId}")
+            config.statListener(pathStatInfo)
+        }
     }
 }
