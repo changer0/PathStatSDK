@@ -43,6 +43,10 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      */
     private var pageState: PageState? = null
     get() {
+        if (field == null) {
+            //这应该是极端异常场景，不应为空
+            return null
+        }
         if (field!!.asBinder().isBinderAlive) {
             return field
         }
@@ -208,8 +212,8 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             pageState = PageState.Stub.asInterface(service)
-            if (Utils.isMainProcess(config.application)) {
-                pageState?.let {
+            pageState?.let {
+                if (Utils.isMainProcess(config.application)) {
                     it.sessionId = UUID.randomUUID().toString()
                 }
             }
