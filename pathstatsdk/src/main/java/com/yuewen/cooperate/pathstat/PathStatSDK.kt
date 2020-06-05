@@ -80,9 +80,11 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             })
             return
         }
-        val activityNum = pageState!!.activityNum+1
-        pageState!!.activityNum = activityNum
-        Log.d(TAG, "onActivityCreated，activityNum: $activityNum")
+        pageState?.let {
+            val activityNum = it.activityNum+1
+            it.activityNum = activityNum
+            Log.d(TAG, "onActivityCreated，activityNum: $activityNum")
+        }
     }
     override fun onActivityStarted(activity: Activity) {
         if (!serviceConnected) {
@@ -114,11 +116,13 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             })
             return
         }
-        val activityNum = pageState!!.activityNum-1
-        pageState!!.activityNum = activityNum
-        Log.d(TAG, "onActivityDestroyed, activityNum: $activityNum")
-        if (activityNum == 0) {
-            release()//当 Activity 不存在时，释放
+        pageState?.let {
+            val activityNum = it.activityNum-1
+            it.activityNum = activityNum
+            Log.d(TAG, "onActivityDestroyed, activityNum: $activityNum")
+            if (activityNum == 0) {
+                release()//当 Activity 不存在时，释放
+            }
         }
     }
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
@@ -246,10 +250,12 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      * 释放
      */
     private fun release() {
-        pageState!!.order = 0
-        if (Utils.isMainProcess(config.application)) {
-            //主进程赋值一次
-            pageState!!.sessionId = UUID.randomUUID().toString()
+        pageState?.let {
+            it.order = 0
+            if (Utils.isMainProcess(config.application)) {
+                //主进程赋值一次
+                it.sessionId = UUID.randomUUID().toString()
+            }
         }
     }
     /**
@@ -292,7 +298,7 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             Log.w(TAG, "注意：${pathStatInfo.className} 未实现 IGetPathStatInfo 接口，将使用类名进行上报！")
         }
 
-        //上报序号增 1
+        //上报序号增 1 pageState 上面已判空
         pathStatInfo.curOrder =  pageState!!.order+1
         pageState!!.order = pathStatInfo.curOrder
         pathStatInfo.sessionId = pageState!!.sessionId
