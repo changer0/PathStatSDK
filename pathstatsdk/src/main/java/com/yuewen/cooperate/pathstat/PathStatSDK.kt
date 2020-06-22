@@ -84,9 +84,9 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             })
             return
         }
-        pageState?.let {
-            val activityNum = it.activityNum+1
-            it.activityNum = activityNum
+        pageState?.applyTryCache {
+            val activityNum = this.activityNum+1
+            this.activityNum = activityNum
             Log.d(TAG, "onActivityCreated，activityNum: $activityNum")
         }
     }
@@ -120,9 +120,9 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
             })
             return
         }
-        pageState?.let {
-            val activityNum = it.activityNum-1
-            it.activityNum = activityNum
+        pageState?.applyTryCache {
+            val activityNum = this.activityNum-1
+            this.activityNum = activityNum
             Log.d(TAG, "onActivityDestroyed, activityNum: $activityNum")
             if (activityNum <= 0) {
                 release()//当 Activity 不存在时，释放(< 0 为异常场景)
@@ -212,9 +212,9 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             pageState = PageState.Stub.asInterface(service)
-            pageState?.let {
+            pageState?.applyTryCache {
                 if (Utils.isMainProcess(config.application)) {
-                    it.sessionId = UUID.randomUUID().toString()
+                    this.sessionId = UUID.randomUUID().toString()
                 }
             }
             serviceConnected = true
@@ -256,11 +256,11 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
      * 释放
      */
     private fun release() {
-        pageState?.let {
-            it.order = 0
+        pageState?.applyTryCache {
+            this.order = 0
             if (Utils.isMainProcess(config.application)) {
                 //主进程赋值一次
-                it.sessionId = UUID.randomUUID().toString()
+                this.sessionId = UUID.randomUUID().toString()
             }
         }
     }
@@ -305,12 +305,25 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
         }
 
         //上报序号增 1
-        pageState?.let {
-            pathStatInfo.curOrder =  it.order+1
-            it.order = pathStatInfo.curOrder
-            pathStatInfo.sessionId = it.sessionId
+        pageState?.applyTryCache {
+            pathStatInfo.curOrder =  this.order+1
+            this.order = pathStatInfo.curOrder
+            pathStatInfo.sessionId = this.sessionId
             Log.d(TAG, "上报序号：${pathStatInfo.curOrder}, 上报 pn：${pathStatInfo.pn}，SessionId：${pathStatInfo.sessionId}")
             config.statListener(pathStatInfo)
         }
     }
+
+    /**
+     * 包裹可能出问题的代码块
+     */
+    private inline fun <T> T.applyTryCache(block: T.() -> Unit): T {
+        try {
+            block()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return this
+    }
+
 }
