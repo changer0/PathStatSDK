@@ -130,3 +130,4 @@ SDK 版本 | 插件版本 | 备注
 1.0.9|1.0.9| fix android.os.DeadObjectException
 1.0.10|1.0.9| fix NullPointer
 1.0.11|1.0.9| fix android.os.DeadObjectException
+1.0.11|1.0.10| 插件支持增量编译

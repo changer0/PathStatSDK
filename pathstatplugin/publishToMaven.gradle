@@ -1,9 +1,5 @@
 apply plugin : 'maven-publish'
 
-group = 'com.yuewen.cooperate.pathstat'
-version = "1.0.9"
-def artifactId = "pathstatplugin"
-
 def releaseRepoUrl = "http://dev.inner.yuewen.local/nexus/repository/maven-releases/"
 def snapShotsRepoUrl = "http://dev.inner.yuewen.local/nexus/repository/maven-snapshots/"
 
@@ -16,9 +12,9 @@ if (uploadToMaven.toBoolean()) {
                 repository(url: "$releaseRepoUrl") {
                     authentication(userName: "dev", password: "dev")
                 }
-                pom.version = "$project.version"
-                pom.artifactId = "$artifactId"
-                pom.groupId = "$project.group"
+                pom.version = VERSION
+                pom.artifactId = ARTIFACT_ID
+                pom.groupId = GROUP_ID
             }
         }
     }.doFirst {
