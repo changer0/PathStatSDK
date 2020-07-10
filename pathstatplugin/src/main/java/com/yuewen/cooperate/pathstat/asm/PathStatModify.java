@@ -21,7 +21,7 @@ import java.util.zip.ZipEntry;
 /**
  * 做相关类的修改
  */
-class PathStatModify {
+public class PathStatModify {
 
     /**
      * 修改 Jar
