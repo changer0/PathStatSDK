@@ -1,6 +1,6 @@
 package com.yuewen.cooperate.pathstat.asm.hookclasses;
 
-import com.yuewen.cooperate.pathstat.asm.PushStatMethodVisitor;
+import com.yuewen.cooperate.pathstat.asm.PathStatMethodVisitor;
 
 import org.objectweb.asm.MethodVisitor;
 
@@ -30,7 +30,7 @@ public class HookFragment extends HookClass {
 
         @Override
         public MethodVisitor insertMethod(String[] mInterfaces, String mClassName, String superName, MethodVisitor methodVisitor, int access, String methodName, String desc) {
-            return new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
+            return new PathStatMethodVisitor(methodVisitor, access, methodName, desc) {
                 @Override
                 protected void onMethodExit(int i) {
                     super.onMethodExit(i);
@@ -55,7 +55,7 @@ public class HookFragment extends HookClass {
 
         @Override
         public MethodVisitor insertMethod(String[] mInterfaces, String mClassName, String superName, MethodVisitor methodVisitor, int access, String methodName, String desc) {
-            return new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
+            return new PathStatMethodVisitor(methodVisitor, access, methodName, desc) {
                 @Override
                 protected void onMethodExit(int i) {
                     super.onMethodExit(i);
@@ -80,7 +80,7 @@ public class HookFragment extends HookClass {
 
         @Override
         public MethodVisitor insertMethod(String[] mInterfaces, String mClassName, String superName, MethodVisitor methodVisitor, int access, String methodName, String desc) {
-            return new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
+            return new PathStatMethodVisitor(methodVisitor, access, methodName, desc) {
                 @Override
                 protected void onMethodExit(int i) {
                     super.onMethodExit(i);
@@ -105,7 +105,7 @@ public class HookFragment extends HookClass {
 
         @Override
         public MethodVisitor insertMethod(String[] mInterfaces, String mClassName, String superName, MethodVisitor methodVisitor, int access, String methodName, String desc) {
-            return new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
+            return new PathStatMethodVisitor(methodVisitor, access, methodName, desc) {
                 @Override
                 protected void onMethodExit(int i) {
                     super.onMethodExit(i);
@@ -130,7 +130,7 @@ public class HookFragment extends HookClass {
 
         @Override
         public MethodVisitor insertMethod(String[] mInterfaces, String mClassName, String superName, MethodVisitor methodVisitor, int access, String methodName, String desc) {
-            return new PushStatMethodVisitor(methodVisitor, access, methodName, desc) {
+            return new PathStatMethodVisitor(methodVisitor, access, methodName, desc) {
                 @Override
                 protected void onMethodExit(int i) {
                     super.onMethodExit(i);
