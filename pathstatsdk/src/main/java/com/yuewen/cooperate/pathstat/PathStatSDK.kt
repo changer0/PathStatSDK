@@ -228,11 +228,10 @@ class PathStatSDK private constructor() : Application.ActivityLifecycleCallbacks
     }
     private fun bindService(application: Application) {
         //子线程中绑定服务
-        Thread(Runnable {
-            val intent = Intent(application,  PageStateService::class.java)
-            application.bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE)
-            Log.d(TAG, "开始 bindService：${Utils.isMainProcess(config.application)}")
-        }).start()
+        val intent = Intent(application,  PageStateService::class.java)
+        application.startService(intent)
+        application.bindService(intent,serviceConnection, Context.BIND_NOT_FOREGROUND)
+        Log.d(TAG, "开始 bindService：${Utils.isMainProcess(config.application)}")
     }
     // PathStatSDKStateService end
     //----------------------------------------------------------------------------------------------

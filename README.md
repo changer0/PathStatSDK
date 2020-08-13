@@ -132,3 +132,5 @@ SDK 版本 | 插件版本 | 备注
 1.0.11|1.0.9| fix android.os.DeadObjectException
 1.0.11|1.0.10| 插件支持增量编译（有测试代码，需删除）
 1.0.11|1.0.11| 插件支持增量编译
+1.0.12|1.0.11| 将 bindService flag 改为 0 防止认为前台进程 (不可用！)
+1.0.13|1.0.11| 将 bindService flag 改为 BIND_NOT_FOREGROUND 防止认为前台进程
