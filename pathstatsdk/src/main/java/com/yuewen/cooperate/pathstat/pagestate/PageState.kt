@@ -122,7 +122,7 @@ class PageState(val application: Application) {
     }
 
     /**
-     * 获取 Activity 个数并 + 1
+     * 获取 Activity 个数并 - 1
      */
     fun obtainActivityNumAndDescend() : Int? {
         return call(GET_ACTIVITY_NUM_AND_DESCEND)?.getInt(RESULT)
