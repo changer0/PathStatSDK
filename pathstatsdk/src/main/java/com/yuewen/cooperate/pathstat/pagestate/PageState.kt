@@ -1,7 +1,6 @@
 package com.yuewen.cooperate.pathstat.pagestate
 
 import android.app.Application
-import android.content.ContentResolver
 import android.net.Uri
 import android.os.Bundle
 import com.yuewen.cooperate.pathstat.Utils
@@ -9,7 +8,7 @@ import java.util.*
 
 /**
  * @author zhanglulu on 2020/8/20.
- * for
+ * for 页面状态保存
  */
 class PageState(val application: Application) {
 
