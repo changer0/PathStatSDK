@@ -4,7 +4,7 @@
 
     <application>
         <provider android:name="com.yuewen.cooperate.pathstat.pagestate.PathStateContentProvider"
-            android:authorities="com.yuewen.cooperate.pathstat.provider"
+            android:authorities="${applicationId}.pathstat.provider"
             android:exported="false" />
     </application>
 

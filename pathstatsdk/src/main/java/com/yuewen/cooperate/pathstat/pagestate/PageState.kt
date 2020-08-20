@@ -23,7 +23,7 @@ class PageState(val application: Application) {
     }
     private val resolver = application.contentResolver
 
-    private val providerUri = Uri.parse("content://com.yuewen.cooperate.pathstat.provider")
+    private val providerUri = Uri.parse("content://${application.packageName}.pathstat.provider")
 
     /**
      * 会话 ID
