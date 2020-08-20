@@ -126,3 +126,12 @@ SDK 版本 | 插件版本 | 备注
 1.0.7|1.0.7| 去掉日志打印
 1.0.7|1.0.8| 修复插件优化编译速度引入的 bug（增量编译时，导致静态变量值没有被重置）
 1.0.7|1.0.9| 大幅度优化插件编译速度（飞读项目 70s -> 20s）
+1.0.8|1.0.9| fix Fragment already active and state has been saved
+1.0.9|1.0.9| fix android.os.DeadObjectException
+1.0.10|1.0.9| fix NullPointer
+1.0.11|1.0.9| fix android.os.DeadObjectException
+1.0.11|1.0.10| 插件支持增量编译（有测试代码，需删除）
+1.0.11|1.0.11| 插件支持增量编译
+1.0.12|1.0.11| 将 bindService flag 改为 0 防止认为前台进程 (不可用！)
+1.0.13|1.0.11| 将 bindService flag 改为 BIND_NOT_FOREGROUND 防止认为前台进程
+1.0.14|1.0.11| 重大更新，摒弃 Service 实现的跨进程传输，改为 ContentProvider

@@ -10,11 +10,11 @@ import org.objectweb.asm.commons.AdviceAdapter;
  * Created by zhanglulu on 2020/4/17.
  */
 
-public class PushStatMethodVisitor extends AdviceAdapter {
+public class PathStatMethodVisitor extends AdviceAdapter {
     String methodName = "";
 
 
-    protected PushStatMethodVisitor(MethodVisitor methodVisitor, int access, String name, String desc) {
+    protected PathStatMethodVisitor(MethodVisitor methodVisitor, int access, String name, String desc) {
         super(Opcodes.ASM4, methodVisitor, access, name, desc);
         methodName = name;
     }

@@ -1,10 +1,10 @@
 package com.yuewen.cooperate.pathstat
 
-
 import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.Format
 import com.android.build.api.transform.JarInput
 import com.android.build.api.transform.QualifiedContent
+import com.android.build.api.transform.Status
 import com.android.build.api.transform.Transform
 import com.android.build.api.transform.TransformException
 import com.android.build.api.transform.TransformInput
@@ -29,7 +29,7 @@ class PathStatTransform extends Transform {
     PathStatTransform(Project project) {
         mProject = project
     }
-// 设置我们自定义的Transform对应的Task名称
+    // 设置我们自定义的Transform对应的Task名称
     // 类似：transformClassesWithPreDexForXXX
     // 这里应该是：transformClassesWithInjectTransformForxxx
     @Override
@@ -53,7 +53,7 @@ class PathStatTransform extends Transform {
     // 当前Transform是否支持增量编译
     @Override
     boolean isIncremental() {
-        return false
+        return true
     }
 
     // 核心方法
@@ -61,11 +61,16 @@ class PathStatTransform extends Transform {
     // outputProvider 获取输出目录，将修改的文件复制到输出目录，必须执行
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
-        this.transform(transformInvocation.getContext(), transformInvocation.getInputs(), transformInvocation.getReferencedInputs(), transformInvocation.getOutputProvider(), transformInvocation.isIncremental())
+        super.transform(transformInvocation)
+        boolean isIncremental = transformInvocation.isIncremental()
         HookClassManger.isDebug = mProject.extensions.getByType(PathExtensions).getIsDebug()
         println "idDebug：${HookClassManger.isDebug}"
+        println "isIncremental：$isIncremental"
+        if(!isIncremental) {
+            transformInvocation.getOutputProvider().deleteAll()
+        }
         Logger.info("||=================================================||")
-        Logger.info("||                    开始计时                      ||")
+        Logger.info("||              PathStatSDK 开始计时                ||")
         Logger.info("||=================================================||")
         HookClassManger.initMatchClassSize()
         def startTime = System.currentTimeMillis()
@@ -74,78 +79,78 @@ class PathStatTransform extends Transform {
                 //对类型为jar文件的input进行遍历
                 input.jarInputs.each {
                     JarInput jarInput ->
-                        String destName = jarInput.file.name
-                        /** 截取文件路径的md5值重命名输出文件,因为可能同名,会覆盖*/
-                        def hexName = DigestUtils.md5Hex(jarInput.file.absolutePath).substring(0, 8)
-                        if (destName.endsWith(".jar")) {
-                            destName = destName.substring(0, destName.length() - 4)
-                        }
-                        /** 获得输出文件*/
-                        File dest = transformInvocation.getOutputProvider().getContentLocation(destName + "_" + hexName, jarInput.contentTypes, jarInput.scopes, Format.JAR)
-                        if (HookClassManger.isDebug) {
-                            Logger.info("开始遍历特定jar: ${dest.absolutePath}")
-                        }
-                        def modifiedJar = null
-                        //如果已经遍历完成我们需要遍历的 class，就无需 modifyJarFile
-                        if (!HookClassManger.isAllClassMatchFinish()) {
-                            modifiedJar = modifyJarFile(jarInput.file, transformInvocation.context.getTemporaryDir())
-                        } else {
-                            if (HookClassManger.isDebug) {
-                                Logger.info("该 Jar 包忽略: ${dest.absolutePath}")
-                            }
-                        }
-                        if (modifiedJar == null) {
-                            modifiedJar = jarInput.file
-                        }
-                        // 将input的目录复制到output指定目录
-                        FileUtils.copyFile(modifiedJar, dest)
+                        forEachJar(isIncremental, jarInput, transformInvocation)
                 }
                 // 遍历文件夹
                 //文件夹里面包含的是我们手写的类以及R.class、BuildConfig.class以及R$XXX.class等
                 input.directoryInputs.each {
                     DirectoryInput directoryInput ->
-                        File dest = transformInvocation.getOutputProvider().getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)
-                        File dir = directoryInput.file
-                        if (dir) {
-                            HashMap<String, File> modifyMap = new HashMap<>()
-                            dir.traverse(type: FileType.FILES, nameFilter: ~/.*\.class/) {
-                                File classFile ->
-                                    //过滤掉 BuildConfig.class R 等文件
-                                    if (!classFile.name.endsWith("R.class")
-                                            && !classFile.name.endsWith("BuildConfig.class")
-                                            && !classFile.name.contains("R\$") && !HookClassManger.isAllClassMatchFinish()) {
-                                        //修改 class 文件
-                                        File modified = modifyClassFile(dir, classFile, transformInvocation.context.getTemporaryDir())
-                                        if (modified != null) {
-                                            //key为相对路径
-                                            modifyMap.put(classFile.absolutePath.replace(dir.absolutePath, ""), modified)
-                                        }
-                                    } else {
-                                        if (HookClassManger.isDebug) {
-                                            Logger.info("该 class 忽略: ${classFile.name}")
-                                        }
-                                    }
-
-                            }
-                            FileUtils.copyDirectory(directoryInput.file, dest)
-                            modifyMap.entrySet().each {
-                                Map.Entry<String, File> en ->
-                                    File target = new File(dest.absolutePath + en.getKey())
-                                    if (target.exists()) {
-                                        target.delete()
-                                    }
-                                    FileUtils.copyFile(en.getValue(), target)
-                                    en.getValue().delete()
-                            }
-                        }
+                        forEachDirectory(isIncremental, directoryInput, transformInvocation)
                 }
-
         }
         //计算耗时
         def cost = (System.currentTimeMillis() - startTime) / 1000
         Logger.info("||=================================================||")
         Logger.info("||                总耗时：${cost}秒                  ||")
         Logger.info("||=================================================||")
+    }
+
+
+    /**
+     * 遍历 Jar 文件
+     * @param isIncremental
+     * @param jarInput
+     * @param transformInvocation
+     */
+    private static void forEachJar(boolean isIncremental, JarInput jarInput, TransformInvocation transformInvocation) {
+        String destName = jarInput.file.name
+        /** 截取文件路径的md5值重命名输出文件,因为可能同名,会覆盖*/
+        def hexName = DigestUtils.md5Hex(jarInput.file.absolutePath).substring(0, 8)
+        if (destName.endsWith(".jar")) {
+            destName = destName.substring(0, destName.length() - 4)
+        }
+        /** 获得输出文件*/
+        File dest = transformInvocation.getOutputProvider().getContentLocation(destName + "_" + hexName, jarInput.contentTypes, jarInput.scopes, Format.JAR)
+        if (HookClassManger.isDebug) {
+            Logger.info("开始遍历特定jar: ${dest.absolutePath} jarInput.status: ${jarInput.status}")
+        }
+        if (isIncremental) {
+            switch (jarInput.status) {
+                case Status.NOTCHANGED:
+                    break
+                case Status.ADDED:
+                case Status.CHANGED:
+                    copyJarToDest(jarInput, dest, transformInvocation.context.getTemporaryDir())
+                    break
+                case Status.REMOVED:
+                    if (dest.exists()) {
+                        FileUtils.forceDelete(dest)
+                    }
+                    break
+            }
+        } else {
+            copyJarToDest(jarInput, dest, transformInvocation.context.getTemporaryDir())
+        }
+    }
+
+    /**
+     * 将 Jar 复制到输出目录
+     */
+    private static void copyJarToDest(JarInput jarInput, File dest, File tempDir) {
+        def modifiedJar = null
+        //如果已经遍历完成我们需要遍历的 class，就无需 modifyJarFile
+        if (!HookClassManger.isAllClassMatchFinish()) {
+            modifiedJar = modifyJarFile(jarInput.file, tempDir)
+        } else {
+            if (HookClassManger.isDebug) {
+                Logger.info("该 Jar 包忽略: ${dest.absolutePath}")
+            }
+        }
+        if (modifiedJar == null) {
+            modifiedJar = jarInput.file
+        }
+        // 将input的目录复制到output指定目录
+        FileUtils.copyFile(modifiedJar, dest)
     }
 
     /**
@@ -157,6 +162,90 @@ class PathStatTransform extends Transform {
 
         }
         return null
+    }
+
+    /**
+     * 遍历目录
+     * @param isIncremental
+     * @param directoryInput
+     * @param transformInvocation
+     */
+    private static void forEachDirectory(boolean isIncremental, DirectoryInput directoryInput, TransformInvocation transformInvocation) {
+        File dest = transformInvocation.getOutputProvider().getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)
+        FileUtils.forceMkdir(dest)
+        File dir = directoryInput.file
+        String srcDirPath = dir.absolutePath
+        String destDirPath = dest.absolutePath
+        if (isIncremental) {
+            //遍历所有的带有状态的文件
+            Map<File, Status> fileStatusMap = directoryInput.getChangedFiles()
+            for (Map.Entry<File, Status> changedFile: fileStatusMap.entrySet()) {
+                Status status = changedFile.getValue()
+                File inputFile = changedFile.getKey()
+                String destFilePath = inputFile.absolutePath.replace(srcDirPath, destDirPath)
+                if (HookClassManger.isDebug) {
+                    Logger.info("目录 status = $status: $inputFile.absolutePath")
+                    Logger.info("目录 srcDirPath: $srcDirPath")
+                    Logger.info("目录 destDirPath: $destDirPath")
+                    Logger.info("目录 destFilePath: $destFilePath")
+                }
+                File destFile = new File(destFilePath)
+                switch (status) {
+                    case Status.NOTCHANGED:
+                        break
+                    case Status.REMOVED:
+                        if (destFile.exists()) {
+                            destFile.delete()
+                        }
+                        break
+                    case Status.ADDED:
+                    case Status.CHANGED:
+                        if (inputFile.isDirectory()) {//如果返回的是文件夹就不进行处理
+                            if (destFile.isDirectory() && !destFile.exists()) {
+                                destFile.mkdirs()
+                            }
+                        } else {
+                            File modified = modifyClassFile(dir, inputFile, transformInvocation.getContext().getTemporaryDir())
+                            if (destFile.exists()) {
+                                destFile.delete()
+                            }
+                            if (modified != null) {
+                                FileUtils.copyFile(modified, destFile)
+                                modified.delete()
+                            } else {
+                                FileUtils.copyFile(inputFile, destFile)
+                            }
+                        }
+                        break
+                    default:
+                        break
+                }
+            }
+        } else {
+            FileUtils.copyDirectory(dir, dest)
+            dir.traverse(type: FileType.FILES, nameFilter: ~/.*\.class/) {
+                File inputFile ->
+                    //过滤掉 BuildConfig.class R 等文件
+                    if (!inputFile.name.endsWith("R.class")
+                            && !inputFile.name.endsWith("BuildConfig.class")
+                            && !inputFile.name.contains("R\$") && !HookClassManger.isAllClassMatchFinish()) {
+                        File modified = modifyClassFile(dir, inputFile, transformInvocation.getContext().getTemporaryDir())
+                        if (modified != null) {
+                            File target = new File(inputFile.absolutePath.replace(srcDirPath, destDirPath))
+                            if (target.exists()) {
+                                target.delete()
+                            }
+                            FileUtils.copyFile(modified, target)
+                            modified.delete()
+                        }
+                    } else {
+                        if (HookClassManger.isDebug) {
+                            Logger.info("该 class 忽略: ${inputFile.name}")
+                        }
+                    }
+
+            }
+        }
     }
 
 

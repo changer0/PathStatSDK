@@ -61,6 +61,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
     override fun onActivityStopped(activity: Activity) {
         Log.d(TAG, "onActivityStopped: ${activity.javaClass.name}")
+        Log.d(TAG, "isAppIsInBackground: ${Utility.isAppIsInBackground(activity.applicationContext)}")
     }
 
     override fun onActivityDestroyed(activity: Activity) {

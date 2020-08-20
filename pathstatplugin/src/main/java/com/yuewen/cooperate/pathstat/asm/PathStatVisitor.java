@@ -72,7 +72,7 @@ class PathStatVisitor extends ClassVisitor {
             }
         } else {
             //被过滤掉的方法
-            adapter = new PushStatMethodVisitor(methodVisitor, access, name,desc);
+            adapter = new PathStatMethodVisitor(methodVisitor, access, name,desc);
         }
         if (adapter != null) {
             return adapter;
